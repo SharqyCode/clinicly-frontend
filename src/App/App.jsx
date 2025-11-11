@@ -1,10 +1,12 @@
 import ButtonExample from "../_themeUseExample/buttonExample";
+import PatientDash from "../Features/Patient/Pages/PatientDash";
 
 // Import global routing here
 function App() {
   return (
     <>
-      <ButtonExample />
+    <PatientDash/>
+      {/* <ButtonExample /> */}
     </>
   );
 }
