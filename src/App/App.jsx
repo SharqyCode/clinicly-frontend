@@ -1,12 +1,13 @@
 import ButtonExample from "../_themeUseExample/buttonExample";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import PatientDash from "../Features/Patient/Pages/PatientDash";
+import DoctorDash from "../Features/Doctor/Pages/DoctorDash";
 
-// Import global routing here
 function App() {
   return (
     <>
     <PatientDash/>
-      {/* <ButtonExample /> */}
+     <DoctorDash/>
     </>
   );
 }
