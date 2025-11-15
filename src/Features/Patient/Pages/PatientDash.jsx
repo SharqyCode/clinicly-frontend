@@ -1,12 +1,13 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { usePatients } from "../../hooks/usePatients"; 
+import { usePatients } from "../../hooks/usePatients";
 import calender from "../../../assets/calender.svg";
 import record from "../../../assets/record.svg";
 import mail from "../../../assets/mail.svg";
 import homelogo from "../../../assets/homelogo.svg";
 import msg from "../../../assets/msg.svg";
 import profile from "../../../assets/profile.svg";
+import prescriptionIcon from "../../../assets/prescription.svg";
 
 export default function PatientDash() {
   const { data, isLoading, isError, error } = usePatients();
@@ -15,6 +16,11 @@ export default function PatientDash() {
   const sidebarItems = [
     { label: "Dashboard", icon: homelogo, path: "/dashboard" },
     { label: "My Appointments", icon: calender, path: "/my-appointments" },
+    {
+      label: "My Prescriptions",
+      icon: prescriptionIcon,
+      path: "/my-prescriptions",
+    },
     { label: "Medical Records", icon: record, path: "/medical-records" },
     { label: "Messages", icon: msg, path: "/messages" },
     { label: "Profile", icon: profile, path: "/profile" },

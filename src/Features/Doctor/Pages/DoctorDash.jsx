@@ -5,8 +5,10 @@ import homeIcon from "../../../assets/homelogo.svg";
 import calender from "../../../assets/calender.svg";
 import patients from "../../../assets/patients.svg";
 import Brain from "../../../assets/Brain.svg";
+import prescriptionIcon from "../../../assets/prescription.svg";
 import PatientsList from "./PatientsList";
 import AppointmentsList from "./AppointmentsList";
+import DoctorPrescriptions from "../../Prescriptions/DoctorPrescriptions";
 
 export default function DoctorDash() {
   const [activeView, setActiveView] = useState("dashboard");
@@ -15,6 +17,7 @@ export default function DoctorDash() {
     { label: "Dashboard", icon: homeIcon, view: "dashboard" },
     { label: "Appointments", icon: calender, view: "appointments" },
     { label: "Patients", icon: patients, view: "patients" },
+    { label: "Prescriptions", icon: prescriptionIcon, view: "prescriptions" },
     { label: "AI Diagnosis Tool", icon: Brain, view: "ai-tool" },
   ];
 
@@ -229,6 +232,8 @@ export default function DoctorDash() {
               <PatientsList />
             ) : activeView === "appointments" ? (
               <AppointmentsList />
+            ) : activeView === "prescriptions" ? (
+              <DoctorPrescriptions />
             ) : activeView === "ai-tool" ? (
               <div className="p-4">
                 <h1 className="text-3xl font-bold text-gray-900 mb-6">
