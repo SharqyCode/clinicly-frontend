@@ -6,6 +6,7 @@ import calender from "../../../assets/calender.svg";
 import patients from "../../../assets/patients.svg";
 import Brain from "../../../assets/Brain.svg";
 import PatientsList from "./PatientsList";
+import AppointmentsList from "./AppointmentsList";
 
 export default function DoctorDash() {
   const [activeView, setActiveView] = useState("dashboard");
@@ -18,9 +19,24 @@ export default function DoctorDash() {
   ];
 
   const appointments = [
-    { time: "9:00 AM", patient: "Liam Harper", type: "Check-up", status: "Confirmed" },
-    { time: "10:30 AM", patient: "Olivia Bennett", type: "Consultation", status: "Confirmed" },
-    { time: "2:00 PM", patient: "Noah Carter", type: "Follow-up", status: "Confirmed" },
+    {
+      time: "9:00 AM",
+      patient: "Liam Harper",
+      type: "Check-up",
+      status: "Confirmed",
+    },
+    {
+      time: "10:30 AM",
+      patient: "Olivia Bennett",
+      type: "Consultation",
+      status: "Confirmed",
+    },
+    {
+      time: "2:00 PM",
+      patient: "Noah Carter",
+      type: "Follow-up",
+      status: "Confirmed",
+    },
   ];
 
   const messages = [
@@ -72,9 +88,15 @@ export default function DoctorDash() {
                   key={i}
                   className="border-t border-[#dbdfe6] hover:bg-bg-light-secondary transition-colors duration-200"
                 >
-                  <td className="px-4 py-2 text-[#616f89] text-sm">{appt.time}</td>
-                  <td className="px-4 py-2 text-text-dark text-sm">{appt.patient}</td>
-                  <td className="px-4 py-2 text-[#616f89] text-sm">{appt.type}</td>
+                  <td className="px-4 py-2 text-[#616f89] text-sm">
+                    {appt.time}
+                  </td>
+                  <td className="px-4 py-2 text-text-dark text-sm">
+                    {appt.patient}
+                  </td>
+                  <td className="px-4 py-2 text-[#616f89] text-sm">
+                    {appt.type}
+                  </td>
                   <td className="px-4 py-2 text-sm font-medium">
                     <button className="rounded-lg bg-bg-light-secondary text-text-dark px-4 py-1 text-sm font-medium">
                       {appt.status}
@@ -103,7 +125,9 @@ export default function DoctorDash() {
             ></div>
             <div className="flex flex-col justify-center">
               <p className="text-text-dark text-base font-medium">{msg.name}</p>
-              <p className="text-[#616f89] text-sm font-normal">{msg.message}</p>
+              <p className="text-[#616f89] text-sm font-normal">
+                {msg.message}
+              </p>
             </div>
           </div>
         </div>
@@ -184,8 +208,7 @@ export default function DoctorDash() {
                           activeView === item.view
                             ? "bg-bg-light-secondary text-black font-semibold"
                             : "hover:bg-gray-200 text-[#111318] active:font-semibold"
-                        }`
-                      }
+                        }`}
                     >
                       <img
                         src={item.icon}
@@ -205,14 +228,15 @@ export default function DoctorDash() {
             {activeView === "patients" ? (
               <PatientsList />
             ) : activeView === "appointments" ? (
-              <div className="p-4">
-                <h1 className="text-3xl font-bold text-gray-900 mb-6">Appointments</h1>
-                <p className="text-gray-600">Appointments management coming soon...</p>
-              </div>
+              <AppointmentsList />
             ) : activeView === "ai-tool" ? (
               <div className="p-4">
-                <h1 className="text-3xl font-bold text-gray-900 mb-6">AI Diagnosis Tool</h1>
-                <p className="text-gray-600">AI diagnosis functionality coming soon...</p>
+                <h1 className="text-3xl font-bold text-gray-900 mb-6">
+                  AI Diagnosis Tool
+                </h1>
+                <p className="text-gray-600">
+                  AI diagnosis functionality coming soon...
+                </p>
               </div>
             ) : (
               <>

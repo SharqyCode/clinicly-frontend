@@ -205,6 +205,41 @@ const initialPatientsData = [
     points: 850,
     avatar:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    nextAppointment: {
+      date: "2024-11-20",
+      time: "10:30 AM",
+      type: "Follow-up",
+      doctor: "Dr. Emily Carter",
+    },
+    appointmentHistory: [
+      {
+        id: 1,
+        date: "2024-11-10",
+        time: "9:00 AM",
+        type: "Check-up",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Blood pressure stable, continue current medication",
+      },
+      {
+        id: 2,
+        date: "2024-10-15",
+        time: "2:30 PM",
+        type: "Consultation",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Initial consultation for hypertension management",
+      },
+      {
+        id: 3,
+        date: "2024-09-20",
+        time: "11:00 AM",
+        type: "Lab Work",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Blood work and cholesterol screening",
+      },
+    ],
   },
   {
     id: 2,
@@ -220,6 +255,32 @@ const initialPatientsData = [
     points: 1250,
     avatar:
       "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
+    nextAppointment: {
+      date: "2024-11-18",
+      time: "2:00 PM",
+      type: "Diabetes Management",
+      doctor: "Dr. Emily Carter",
+    },
+    appointmentHistory: [
+      {
+        id: 1,
+        date: "2024-11-12",
+        time: "1:30 PM",
+        type: "Follow-up",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Blood sugar levels improving, adjust medication dosage",
+      },
+      {
+        id: 2,
+        date: "2024-10-28",
+        time: "10:00 AM",
+        type: "Consultation",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Diabetes education and lifestyle counseling",
+      },
+    ],
   },
   {
     id: 3,
@@ -235,6 +296,32 @@ const initialPatientsData = [
     points: 620,
     avatar:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    nextAppointment: {
+      date: "2024-11-25",
+      time: "3:15 PM",
+      type: "Pulmonary Function Test",
+      doctor: "Dr. Emily Carter",
+    },
+    appointmentHistory: [
+      {
+        id: 1,
+        date: "2024-11-08",
+        time: "3:00 PM",
+        type: "Check-up",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Asthma well controlled, continue current inhaler regimen",
+      },
+      {
+        id: 2,
+        date: "2024-09-15",
+        time: "11:30 AM",
+        type: "Emergency Visit",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Acute asthma exacerbation, treated with nebulizer",
+      },
+    ],
   },
   {
     id: 4,
@@ -250,6 +337,23 @@ const initialPatientsData = [
     points: 980,
     avatar:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+    nextAppointment: {
+      date: "2024-11-22",
+      time: "9:45 AM",
+      type: "Neurology Consultation",
+      doctor: "Dr. Emily Carter",
+    },
+    appointmentHistory: [
+      {
+        id: 1,
+        date: "2024-11-14",
+        time: "9:30 AM",
+        type: "Follow-up",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Migraine frequency reduced, continue preventive medication",
+      },
+    ],
   },
   {
     id: 5,
@@ -265,6 +369,27 @@ const initialPatientsData = [
     points: 450,
     avatar:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+    nextAppointment: null,
+    appointmentHistory: [
+      {
+        id: 1,
+        date: "2024-11-05",
+        time: "4:00 PM",
+        type: "Check-up",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Joint pain assessment, prescribed anti-inflammatory medication",
+      },
+      {
+        id: 2,
+        date: "2024-08-15",
+        time: "2:15 PM",
+        type: "Physical Therapy Consultation",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Referred to physical therapy for joint mobility",
+      },
+    ],
   },
   {
     id: 6,
@@ -280,6 +405,32 @@ const initialPatientsData = [
     points: 1100,
     avatar:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
+    nextAppointment: {
+      date: "2024-11-19",
+      time: "1:00 PM",
+      type: "Therapy Session",
+      doctor: "Dr. Emily Carter",
+    },
+    appointmentHistory: [
+      {
+        id: 1,
+        date: "2024-11-13",
+        time: "1:00 PM",
+        type: "Mental Health Check-up",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Anxiety levels improving with medication and therapy",
+      },
+      {
+        id: 2,
+        date: "2024-10-30",
+        time: "10:30 AM",
+        type: "Initial Assessment",
+        doctor: "Dr. Emily Carter",
+        status: "Completed",
+        notes: "Anxiety disorder diagnosis, started on SSRI medication",
+      },
+    ],
   },
 ];
 
@@ -316,6 +467,8 @@ const useAddPatientMutation = () => {
         points: 0,
         status: "Active",
         lastVisit: new Date().toISOString().split("T")[0],
+        nextAppointment: null,
+        appointmentHistory: [],
       };
       return newPatient;
     },
@@ -343,7 +496,13 @@ const PatientsList = () => {
       patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       patient.condition.toLowerCase().includes(searchTerm.toLowerCase()) ||
       patient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.bloodType.toLowerCase().includes(searchTerm.toLowerCase())
+      patient.bloodType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      patient.nextAppointment?.type
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      patient.nextAppointment?.date
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase())
   );
 
   const handlePatientClick = (patient) => {
@@ -516,6 +675,176 @@ const PatientsList = () => {
             </div>
           </div>
         </div>
+
+        {/* Appointments Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          {/* Next Appointment */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <svg
+                className="w-6 h-6 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              Next Appointment
+            </h3>
+            {selectedPatient.nextAppointment ? (
+              <div className="space-y-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-lg font-semibold text-gray-900">
+                      {selectedPatient.nextAppointment.type}
+                    </p>
+                    <p className="text-gray-600">
+                      {selectedPatient.nextAppointment.doctor}
+                    </p>
+                  </div>
+                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                    Scheduled
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                    {selectedPatient.nextAppointment.date}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    {selectedPatient.nextAppointment.time}
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors">
+                    Reschedule
+                  </button>
+                  <button className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center text-gray-500 py-8">
+                <svg
+                  className="w-12 h-12 mx-auto mb-3 text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <p>No upcoming appointments</p>
+                <button className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                  Schedule New Appointment
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Appointment History */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <svg
+                className="w-6 h-6 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              Appointment History
+            </h3>
+            <div className="space-y-3 max-h-80 overflow-y-auto">
+              {selectedPatient.appointmentHistory?.map((appointment) => (
+                <div
+                  key={appointment.id}
+                  className="border-l-4 border-green-500 pl-4 py-2"
+                >
+                  <div className="flex justify-between items-start mb-1">
+                    <h4 className="font-semibold text-gray-900">
+                      {appointment.type}
+                    </h4>
+                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">
+                      {appointment.status}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-1">
+                    {appointment.doctor}
+                  </p>
+                  <div className="flex items-center gap-3 text-xs text-gray-500 mb-2">
+                    <span>{appointment.date}</span>
+                    <span>{appointment.time}</span>
+                  </div>
+                  {appointment.notes && (
+                    <p className="text-sm text-gray-700 bg-gray-50 p-2 rounded">
+                      {appointment.notes}
+                    </p>
+                  )}
+                </div>
+              ))}
+              {(!selectedPatient.appointmentHistory ||
+                selectedPatient.appointmentHistory.length === 0) && (
+                <div className="text-center text-gray-500 py-8">
+                  <svg
+                    className="w-12 h-12 mx-auto mb-3 text-gray-300"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  <p>No appointment history available</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -542,7 +871,7 @@ const PatientsList = () => {
         <div className="relative">
           <input
             type="text"
-            placeholder="Search patients by name, condition, email, or blood type..."
+            placeholder="Search patients by name, condition, email, blood type, or appointment..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -644,6 +973,9 @@ const PatientsList = () => {
                   Blood Type
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Next Appointment
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Reward Points
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -695,6 +1027,25 @@ const PatientsList = () => {
                     <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
                       {patient.bloodType}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {patient.nextAppointment ? (
+                      <div>
+                        <div className="font-medium">
+                          {patient.nextAppointment.date}
+                        </div>
+                        <div className="text-gray-500">
+                          {patient.nextAppointment.time}
+                        </div>
+                        <div className="text-xs text-blue-600">
+                          {patient.nextAppointment.type}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-gray-500 italic">
+                        No appointment
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium">
                     <div className="flex items-center gap-1">
