@@ -8,31 +8,16 @@ import Brain from "../../../assets/Brain.svg";
 
 export default function DoctorDash() {
   const sidebarItems = [
-    { label: "Dashboard", icon: homeIcon, path: "/" },
+    { label: "Dashboard", icon: homeIcon, path: "/doctors" },
     { label: "Appointments", icon: calender, path: "/appointments" },
     { label: "Patients", icon: patients, path: "/patients" },
     { label: "AI Diagnosis Tool", icon: Brain, path: "/ai-tool" },
   ];
 
   const appointments = [
-    {
-      time: "9:00 AM",
-      patient: "Liam Harper",
-      type: "Check-up",
-      status: "Confirmed",
-    },
-    {
-      time: "10:30 AM",
-      patient: "Olivia Bennett",
-      type: "Consultation",
-      status: "Confirmed",
-    },
-    {
-      time: "2:00 PM",
-      patient: "Noah Carter",
-      type: "Follow-up",
-      status: "Confirmed",
-    },
+    { time: "9:00 AM", patient: "Liam Harper", type: "Check-up", status: "Confirmed" },
+    { time: "10:30 AM", patient: "Olivia Bennett", type: "Consultation", status: "Confirmed" },
+    { time: "2:00 PM", patient: "Noah Carter", type: "Follow-up", status: "Confirmed" },
   ];
 
   const messages = [
@@ -77,17 +62,18 @@ export default function DoctorDash() {
                 <div className="flex flex-col gap-2 mt-4">
                   {sidebarItems.map((item) => (
                     <NavLink
-                      key={item.label}
-                      to={item.path}
-                      className={({ isActive }) =>
+                    key={item.label}
+                    to={item.path}
+                    className={({ isActive }) =>
                         `flex items-center gap-3 rounded-lg px-4 py-2 font-medium transition-all duration-200
                         ${
-                          isActive
+                        isActive
                             ? "bg-bg-light-secondary text-black font-semibold"
                             : "hover:bg-gray-200 text-[#111318] active:font-semibold"
                         }`
-                      }
+                    }
                     >
+
                       <img
                         src={item.icon}
                         alt={item.label}
@@ -135,27 +121,22 @@ export default function DoctorDash() {
                   </thead>
                   <tbody>
                     {appointments.map((appt, i) => (
-                      <tr
+                        <tr
                         key={i}
                         className="border-t border-[#dbdfe6] hover:bg-bg-light-secondary transition-colors duration-200"
-                      >
-                        <td className="px-4 py-2 text-[#616f89] text-sm">
-                          {appt.time}
-                        </td>
-                        <td className="px-4 py-2 text-text-dark text-sm">
-                          {appt.patient}
-                        </td>
-                        <td className="px-4 py-2 text-[#616f89] text-sm">
-                          {appt.type}
-                        </td>
+                        >
+                        <td className="px-4 py-2 text-[#616f89] text-sm">{appt.time}</td>
+                        <td className="px-4 py-2 text-text-dark text-sm">{appt.patient}</td>
+                        <td className="px-4 py-2 text-[#616f89] text-sm">{appt.type}</td>
                         <td className="px-4 py-2 text-sm font-medium">
-                          <button className="rounded-lg bg-bg-light-secondary text-text-dark px-4 py-1 text-sm font-medium">
+                            <button className="rounded-lg bg-bg-light-secondary text-text-dark px-4 py-1 text-sm font-medium">
                             {appt.status}
-                          </button>
+                            </button>
                         </td>
-                      </tr>
+                        </tr>
                     ))}
-                  </tbody>
+                    </tbody>
+
                 </table>
               </div>
             </div>
@@ -165,26 +146,23 @@ export default function DoctorDash() {
               Recent Patient Messages
             </h2>
             {messages.map((msg, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-4 bg-bg-light-primary px-4 min-h-[72px] py-2 justify-between hover:bg-bg-light-secondary transition-colors duration-200"
-              >
-                <div className="flex items-center gap-4">
-                  <div
-                    className="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14"
-                    style={{ backgroundImage: `url(${msg.img})` }}
-                  ></div>
-                  <div className="flex flex-col justify-center">
-                    <p className="text-text-dark text-base font-medium">
-                      {msg.name}
-                    </p>
-                    <p className="text-[#616f89] text-sm font-normal">
-                      {msg.message}
-                    </p>
-                  </div>
+                <div
+                    key={i}
+                    className="flex items-center gap-4 bg-bg-light-primary px-4 min-h-[72px] py-2 justify-between hover:bg-bg-light-secondary transition-colors duration-200"
+                >
+                    <div className="flex items-center gap-4">
+                    <div
+                        className="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14"
+                        style={{ backgroundImage: `url(${msg.img})` }}
+                    ></div>
+                    <div className="flex flex-col justify-center">
+                        <p className="text-text-dark text-base font-medium">{msg.name}</p>
+                        <p className="text-[#616f89] text-sm font-normal">{msg.message}</p>
+                    </div>
+                    </div>
                 </div>
-              </div>
-            ))}
+                ))}
+
 
             {/* Quick Access */}
             <h2 className="text-text-dark text-[22px] font-bold px-4 pb-3 pt-5">
@@ -198,26 +176,26 @@ export default function DoctorDash() {
                       AI Diagnosis Tool
                     </p>
                     <p className="text-[#616f89] text-sm font-normal">
-                      Quickly analyze patient symptoms and get preliminary
-                      insights.
+                      Quickly analyze patient symptoms and get preliminary insights.
                     </p>
                   </div>
-                  <button
-                    className="flex items-center justify-center gap-2 bg-bg-light-secondary hover:bg-bg-light-primary text-text-dark 
+                    <button
+                        className="flex items-center justify-center gap-2 bg-bg-light-secondary hover:bg-bg-light-primary text-text-dark 
                                     rounded-lg text-sm font-medium transition-colors duration-200"
-                    style={{ width: "125px", height: "32px" }}
-                  >
-                    <span>Launch Tool</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      fill="currentColor"
-                      viewBox="0 0 256 256"
-                    >
-                      <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"></path>
-                    </svg>
-                  </button>
+                        style={{ width: "125px", height: "32px" }}
+                        >
+                        <span>Launch Tool</span>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            fill="currentColor"
+                            viewBox="0 0 256 256"
+                        >
+                            <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"></path>
+                        </svg>
+                        </button>
+
                 </div>
                 <div
                   className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1"

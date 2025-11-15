@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:5002/api";
+
+const BASE_URL = "http://localhost:5000/api";
+
 
 async function handleResponse(response) {
   const contentType = response.headers.get("content-type");
@@ -17,16 +19,14 @@ async function handleResponse(response) {
   return data;
 }
 
+
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
-
-  // Temporary: Log if no token found
-  if (!token) {
-    console.warn("⚠️  No authentication token found in localStorage");
-  }
-
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  return token
+    ? { "Authorization": `Bearer ${token}` }
+    : {};
 }
+
 
 export async function getAllPatients(filters = {}) {
   const query = new URLSearchParams(filters).toString();
@@ -40,6 +40,7 @@ export async function getAllPatients(filters = {}) {
   return handleResponse(res);
 }
 
+
 export async function getPatientById(id) {
   const res = await fetch(`${BASE_URL}/patients/${id}`, {
     method: "GET",
@@ -51,6 +52,7 @@ export async function getPatientById(id) {
   return handleResponse(res);
 }
 
+
 export async function getPatientHistory(id) {
   const res = await fetch(`${BASE_URL}/patients/${id}/history`, {
     method: "GET",
@@ -61,6 +63,7 @@ export async function getPatientHistory(id) {
   });
   return handleResponse(res);
 }
+
 
 export async function createPatient(patientData) {
   const res = await fetch(`${BASE_URL}/patients`, {
@@ -74,6 +77,7 @@ export async function createPatient(patientData) {
   return handleResponse(res);
 }
 
+
 export async function updatePatient(id, updates) {
   const res = await fetch(`${BASE_URL}/patients/${id}`, {
     method: "PUT",
@@ -85,6 +89,7 @@ export async function updatePatient(id, updates) {
   });
   return handleResponse(res);
 }
+
 
 export async function deletePatient(id) {
   const res = await fetch(`${BASE_URL}/patients/${id}`, {
