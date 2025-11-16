@@ -16,7 +16,8 @@ export const updatePatientProfile = async (id, data) => {
 
 export const getAllPatients = async () => {
     const pew = await axios.get(ENDPOINT_URL);
-    console.log(pew);
+
     const pewData = pew.data;
+    console.log(pewData);
     return pewData;
 }
