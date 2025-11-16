@@ -10,9 +10,32 @@ import PatientsList from "./PatientsList";
 import AppointmentsList from "./AppointmentsList";
 import PrescriptionsList from "./PrescriptionsList";
 import PrescriptionForm from "./PrescriptionForm";
+import { useTodayAppointments } from "../../hooks/useAppointments";
+import { useRecentMessages } from "../../hooks/useMessages";
 
 export default function DoctorDash() {
   const [activeView, setActiveView] = useState("dashboard");
+
+  // Fetch real data using TanStack Query
+  const {
+    data: todayAppointmentsData,
+    isLoading: appointmentsLoading,
+    error: appointmentsError,
+  } = useTodayAppointments();
+
+  const {
+    data: recentMessagesData,
+    isLoading: messagesLoading,
+    error: messagesError,
+  } = useRecentMessages(3);
+
+  // Ensure data is always an array
+  const todayAppointments = Array.isArray(todayAppointmentsData)
+    ? todayAppointmentsData
+    : [];
+  const recentMessages = Array.isArray(recentMessagesData)
+    ? recentMessagesData
+    : [];
 
   const sidebarItems = [
     { label: "Dashboard", icon: homeIcon, view: "dashboard" },
@@ -22,45 +45,6 @@ export default function DoctorDash() {
     { label: "AI Diagnosis Tool", icon: Brain, view: "ai-tool" },
   ];
 
-  const appointments = [
-    {
-      time: "9:00 AM",
-      patient: "Liam Harper",
-      type: "Check-up",
-      status: "Confirmed",
-    },
-    {
-      time: "10:30 AM",
-      patient: "Olivia Bennett",
-      type: "Consultation",
-      status: "Confirmed",
-    },
-    {
-      time: "2:00 PM",
-      patient: "Noah Carter",
-      type: "Follow-up",
-      status: "Confirmed",
-    },
-  ];
-
-  const messages = [
-    {
-      name: "Ava Thompson",
-      message: "I've been experiencing severe headaches...",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdFjSQd9umJeHEUx74xU-Ut27vCce33pdddUS07FywQKYXdpmvJcWj47uxOiR8cKv5WjO6fqAXViGrWOIVkhTY6vI5lO6aKmZ32Vv-MUlcBHGY3drQ-MuZBgMNeOsCvG6pV_FK0ZHY_VxdNwwXPhfCCUGff3d58PyW_pBvg7CLvZYL83OghZWTQ7GoUOZWQABYXR0gTbK9jMtx1crESrS1Vov-pZZ_HtEcBgVOfNLQgSYFPC3AoG83ZAigJEM9I4nlc4eKtRaRAKs",
-    },
-    {
-      name: "Ethan Walker",
-      message: "My child has a high fever...",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCsisbYTeQMpK-sIbl-whXmJ_RtsHIfCPpL5h_fmiSJIzR_da7-dze-3ZXTkxkDL8EXB8VjkMoDlaruAlTeRyOpTaN6ULaqqG5rx2Q7GLvrNz6GtoHl438EkTXeKQLPw_KPbw0-POaKnsbEH_qWRl0yzUtbtUQ5t8c9e3tBknIMwoe-FJHMoaS1QHbWVCJT7q1hBDbISPOsQWY2yasChvqC-c5q7IJ791IOm5qOGLkVZb2GsU1A3AfkVg8DuKQ8H1ZKLp-CrU_7jWY",
-    },
-    {
-      name: "Sophia Hayes",
-      message: "I need to reschedule my appointment...",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBPnkewXSR4TDUuj52bd8fd9N8B8Up7WhoDmoVkXCqZWYdvW2XTLO8Qzb8r9zZnP_msUW_MDHc4CzjCXeKs58cyvz-HsH6iOf0q0ogc2vWa0tn3xKP22ZG0-cvWWP9s5-ftmvOwrqUJFY5mTtORyExVB2Nf1QQb9yuarMybRWbB2I5N22xsyD07pU4wFcXVTTKd1jWmlga7l1oS1VxeiH5jj9uDIfNdkfuxQBdEb5aUKisz1SQ1q2YK4nBFfk2L22Y-hsWN8pfetxM",
-    },
-  ];
-
   const renderDashboardContent = () => (
     <>
       {/* Appointments */}
@@ -68,74 +52,127 @@ export default function DoctorDash() {
         Today's Appointments
       </h2>
       <div className="px-4 py-3">
-        <div className="flex overflow-hidden rounded-lg border border-[#dbdfe6] bg-bg-light-primary">
-          <table className="flex-1 w-full">
-            <thead>
-              <tr className="bg-bg-light-secondary">
-                <th className="px-4 py-3 text-left text-text-dark text-sm font-medium">
-                  Time
-                </th>
-                <th className="px-4 py-3 text-left text-text-dark text-sm font-medium">
-                  Patient
-                </th>
-                <th className="px-4 py-3 text-left text-text-dark text-sm font-medium">
-                  Type
-                </th>
-                <th className="px-4 py-3 text-left text-text-dark text-sm font-medium">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {appointments.map((appt, i) => (
-                <tr
-                  key={i}
-                  className="border-t border-[#dbdfe6] hover:bg-bg-light-secondary transition-colors duration-200"
-                >
-                  <td className="px-4 py-2 text-[#616f89] text-sm">
-                    {appt.time}
-                  </td>
-                  <td className="px-4 py-2 text-text-dark text-sm">
-                    {appt.patient}
-                  </td>
-                  <td className="px-4 py-2 text-[#616f89] text-sm">
-                    {appt.type}
-                  </td>
-                  <td className="px-4 py-2 text-sm font-medium">
-                    <button className="rounded-lg bg-bg-light-secondary text-text-dark px-4 py-1 text-sm font-medium">
-                      {appt.status}
-                    </button>
-                  </td>
+        {appointmentsLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-primary-main"></div>
+          </div>
+        ) : appointmentsError ? (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-red-800 font-medium">
+              Failed to load appointments
+            </p>
+            <p className="text-red-600 text-sm mt-1">
+              {appointmentsError.message?.includes("Failed to fetch")
+                ? "Cannot connect to backend. Please ensure the server is running."
+                : appointmentsError.message}
+            </p>
+          </div>
+        ) : todayAppointments.length === 0 ? (
+          <div className="flex overflow-hidden rounded-lg border border-[#dbdfe6] bg-bg-light-primary p-8">
+            <p className="text-[#616f89] text-center w-full">
+              No appointments scheduled for today
+            </p>
+          </div>
+        ) : (
+          <div className="flex overflow-hidden rounded-lg border border-[#dbdfe6] bg-bg-light-primary">
+            <table className="flex-1 w-full">
+              <thead>
+                <tr className="bg-bg-light-secondary">
+                  <th className="px-4 py-3 text-left text-text-dark text-sm font-medium">
+                    Time
+                  </th>
+                  <th className="px-4 py-3 text-left text-text-dark text-sm font-medium">
+                    Patient
+                  </th>
+                  <th className="px-4 py-3 text-left text-text-dark text-sm font-medium">
+                    Type
+                  </th>
+                  <th className="px-4 py-3 text-left text-text-dark text-sm font-medium">
+                    Status
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {todayAppointments.map((appt) => (
+                  <tr
+                    key={appt._id || appt.id}
+                    onClick={() => setActiveView("appointments")}
+                    className="border-t border-[#dbdfe6] hover:bg-bg-light-secondary transition-colors duration-200 cursor-pointer"
+                  >
+                    <td className="px-4 py-2 text-[#616f89] text-sm">
+                      {appt.time}
+                    </td>
+                    <td className="px-4 py-2 text-text-dark text-sm">
+                      {appt.patientName || appt.patient?.name || "Unknown"}
+                    </td>
+                    <td className="px-4 py-2 text-[#616f89] text-sm">
+                      {appt.type || "Consultation"}
+                    </td>
+                    <td className="px-4 py-2 text-sm font-medium">
+                      <button className="rounded-lg bg-bg-light-secondary text-text-dark px-4 py-1 text-sm font-medium">
+                        {appt.status || "Scheduled"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Recent Messages */}
       <h2 className="text-text-dark text-[22px] font-bold px-4 pb-3 pt-5">
         Recent Patient Messages
       </h2>
-      {messages.map((msg, i) => (
-        <div
-          key={i}
-          className="flex items-center gap-4 bg-bg-light-primary px-4 min-h-[72px] py-2 justify-between hover:bg-bg-light-secondary transition-colors duration-200"
-        >
-          <div className="flex items-center gap-4">
-            <div
-              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14"
-              style={{ backgroundImage: `url(${msg.img})` }}
-            ></div>
-            <div className="flex flex-col justify-center">
-              <p className="text-text-dark text-base font-medium">{msg.name}</p>
-              <p className="text-[#616f89] text-sm font-normal">
-                {msg.message}
-              </p>
-            </div>
-          </div>
+      {messagesLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-primary-main"></div>
         </div>
-      ))}
+      ) : messagesError ? (
+        <div className="mx-4 bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-800 font-medium">Failed to load messages</p>
+          <p className="text-red-600 text-sm mt-1">
+            {messagesError.message?.includes("Failed to fetch")
+              ? "Cannot connect to backend. Please ensure the server is running."
+              : messagesError.message}
+          </p>
+        </div>
+      ) : recentMessages.length === 0 ? (
+        <div className="mx-4 rounded-lg border border-[#dbdfe6] bg-bg-light-primary p-8">
+          <p className="text-[#616f89] text-center">No recent messages</p>
+        </div>
+      ) : (
+        recentMessages.map((msg) => (
+          <div
+            key={msg._id || msg.id}
+            className="flex items-center gap-4 bg-bg-light-primary px-4 min-h-[72px] py-2 justify-between hover:bg-bg-light-secondary transition-colors duration-200 cursor-pointer"
+          >
+            <div className="flex items-center gap-4">
+              <div
+                className="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14"
+                style={{
+                  backgroundImage:
+                    msg.patientAvatar || msg.patient?.avatar
+                      ? `url(${msg.patientAvatar || msg.patient?.avatar})`
+                      : "url(https://via.placeholder.com/150)",
+                }}
+              ></div>
+              <div className="flex flex-col justify-center">
+                <p className="text-text-dark text-base font-medium">
+                  {msg.patientName || msg.patient?.name || "Unknown Patient"}
+                </p>
+                <p className="text-[#616f89] text-sm font-normal line-clamp-1">
+                  {msg.message || msg.content || "No message content"}
+                </p>
+              </div>
+            </div>
+            {!msg.read && (
+              <div className="w-2 h-2 bg-accent-primary-main rounded-full"></div>
+            )}
+          </div>
+        ))
+      )}
 
       {/* Quick Access */}
       <h2 className="text-text-dark text-[22px] font-bold px-4 pb-3 pt-5">

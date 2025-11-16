@@ -1,158 +1,10 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
-// Static appointments data - this would typically come from an API
-const initialAppointmentsData = [
-  {
-    id: 1,
-    patientId: 1,
-    patientName: "Liam Harper",
-    patientAvatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-    date: "2024-11-20",
-    time: "10:30 AM",
-    type: "Follow-up",
-    status: "Scheduled",
-    duration: "30 min",
-    notes: "Blood pressure check-up",
-    condition: "Hypertension",
-  },
-  {
-    id: 2,
-    patientId: 2,
-    patientName: "Olivia Bennett",
-    patientAvatar:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
-    date: "2024-11-18",
-    time: "2:00 PM",
-    type: "Diabetes Management",
-    status: "Scheduled",
-    duration: "45 min",
-    notes: "Blood sugar monitoring and medication review",
-    condition: "Diabetes Type 2",
-  },
-  {
-    id: 3,
-    patientId: 3,
-    patientName: "Noah Carter",
-    patientAvatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-    date: "2024-11-25",
-    time: "3:15 PM",
-    type: "Pulmonary Function Test",
-    status: "Scheduled",
-    duration: "60 min",
-    notes: "Asthma evaluation and breathing tests",
-    condition: "Asthma",
-  },
-  {
-    id: 4,
-    patientId: 4,
-    patientName: "Emma Wilson",
-    patientAvatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-    date: "2024-11-22",
-    time: "9:45 AM",
-    type: "Neurology Consultation",
-    status: "Scheduled",
-    duration: "30 min",
-    notes: "Migraine treatment review",
-    condition: "Migraine",
-  },
-  {
-    id: 5,
-    patientId: 6,
-    patientName: "Sophia Martinez",
-    patientAvatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
-    date: "2024-11-19",
-    time: "1:00 PM",
-    type: "Therapy Session",
-    status: "Scheduled",
-    duration: "50 min",
-    notes: "Mental health counseling session",
-    condition: "Anxiety",
-  },
-  // Today's appointments
-  {
-    id: 6,
-    patientId: 1,
-    patientName: "Liam Harper",
-    patientAvatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-    date: "2024-11-15",
-    time: "9:00 AM",
-    type: "Check-up",
-    status: "Completed",
-    duration: "30 min",
-    notes: "Routine health check",
-    condition: "Hypertension",
-  },
-  {
-    id: 7,
-    patientId: 2,
-    patientName: "Olivia Bennett",
-    patientAvatar:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
-    date: "2024-11-15",
-    time: "11:30 AM",
-    type: "Consultation",
-    status: "In Progress",
-    duration: "45 min",
-    notes: "Discussing treatment plan",
-    condition: "Diabetes Type 2",
-  },
-  {
-    id: 8,
-    patientId: 3,
-    patientName: "Noah Carter",
-    patientAvatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-    date: "2024-11-15",
-    time: "2:00 PM",
-    type: "Follow-up",
-    status: "Scheduled",
-    duration: "30 min",
-    notes: "Asthma medication review",
-    condition: "Asthma",
-  },
-];
-
-// Custom hooks for TanStack Query
-const useAppointmentsQuery = () => {
-  return useQuery({
-    queryKey: ["appointments"],
-    queryFn: async () => {
-      // Simulate API call - replace with actual API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      return initialAppointmentsData;
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
-  });
-};
-
-const useUpdateAppointmentMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ appointmentId, updates }) => {
-      // Simulate API call - replace with actual API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      return { appointmentId, updates };
-    },
-    onSuccess: ({ appointmentId, updates }) => {
-      // Update the cache with the updated appointment
-      queryClient.setQueryData(["appointments"], (oldAppointments) => {
-        return (
-          oldAppointments?.map((apt) =>
-            apt.id === appointmentId ? { ...apt, ...updates } : apt
-          ) || []
-        );
-      });
-    },
-  });
-};
+import {
+  useAppointments,
+  useUpdateAppointment,
+  useUpdateAppointmentStatus,
+} from "../../hooks/useAppointments";
 
 const AppointmentsList = () => {
   const [selectedDate, setSelectedDate] = useState("all");
@@ -165,20 +17,23 @@ const AppointmentsList = () => {
     isLoading,
     isError,
     error,
-  } = useAppointmentsQuery();
-  const updateAppointmentMutation = useUpdateAppointmentMutation();
+  } = useAppointments();
+  const updateAppointmentMutation = useUpdateAppointmentStatus();
 
   // Filter appointments based on selected criteria
   const filteredAppointments = appointments.filter((appointment) => {
+    const today = new Date().toISOString().split("T")[0];
+    const appointmentDate = appointment.date?.split("T")[0] || appointment.date;
+
     const dateMatch =
       selectedDate === "all" ||
-      (selectedDate === "today" && appointment.date === "2024-11-15") ||
+      (selectedDate === "today" && appointmentDate === today) ||
       (selectedDate === "upcoming" &&
-        new Date(appointment.date) > new Date("2024-11-15"));
+        new Date(appointmentDate) > new Date(today));
 
     const statusMatch =
       selectedStatus === "all" ||
-      appointment.status.toLowerCase() === selectedStatus;
+      appointment.status?.toLowerCase() === selectedStatus;
 
     return dateMatch && statusMatch;
   });
@@ -186,8 +41,8 @@ const AppointmentsList = () => {
   const handleStatusUpdate = async (appointmentId, newStatus) => {
     try {
       await updateAppointmentMutation.mutateAsync({
-        appointmentId,
-        updates: { status: newStatus },
+        id: appointmentId,
+        status: newStatus,
       });
     } catch (error) {
       console.error("Failed to update appointment:", error);
@@ -210,12 +65,23 @@ const AppointmentsList = () => {
   };
 
   const getTodaysStats = () => {
-    const today = appointments.filter((apt) => apt.date === "2024-11-15");
+    const today = new Date().toISOString().split("T")[0];
+    const todayAppointments = appointments.filter((apt) => {
+      const aptDate = apt.date?.split("T")[0] || apt.date;
+      return aptDate === today;
+    });
+
     return {
-      total: today.length,
-      completed: today.filter((apt) => apt.status === "Completed").length,
-      inProgress: today.filter((apt) => apt.status === "In Progress").length,
-      scheduled: today.filter((apt) => apt.status === "Scheduled").length,
+      total: todayAppointments.length,
+      completed: todayAppointments.filter(
+        (apt) => apt.status?.toLowerCase() === "completed"
+      ).length,
+      inProgress: todayAppointments.filter(
+        (apt) => apt.status?.toLowerCase() === "in progress"
+      ).length,
+      scheduled: todayAppointments.filter(
+        (apt) => apt.status?.toLowerCase() === "scheduled"
+      ).length,
     };
   };
 
@@ -223,7 +89,7 @@ const AppointmentsList = () => {
   if (isLoading) {
     return (
       <div className="flex flex-col h-full justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary-main"></div>
         <p className="mt-4 text-gray-600">Loading appointments...</p>
       </div>
     );
@@ -231,17 +97,24 @@ const AppointmentsList = () => {
 
   if (isError) {
     return (
-      <div className="flex flex-col h-full justify-center items-center">
-        <div className="text-red-600 text-xl mb-4">⚠️</div>
-        <p className="text-red-600">
-          Error loading appointments: {error?.message}
-        </p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          Retry
-        </button>
+      <div className="flex flex-col h-full justify-center items-center p-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
+          <div className="text-red-600 text-xl mb-4 text-center">⚠️</div>
+          <p className="text-red-800 font-medium text-center mb-2">
+            Failed to load appointments
+          </p>
+          <p className="text-red-600 text-sm text-center mb-4">
+            {error?.message?.includes("Failed to fetch")
+              ? "Cannot connect to backend. Please ensure the server is running on http://localhost:5002"
+              : error?.message}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="w-full px-4 py-2 bg-accent-primary-main text-white rounded-lg hover:bg-accent-primary-dark transition-colors"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
@@ -332,24 +205,38 @@ const AppointmentsList = () => {
         <div className="space-y-4">
           {filteredAppointments.map((appointment) => (
             <div
-              key={appointment.id}
+              key={appointment._id || appointment.id}
               className="bg-white rounded-lg shadow border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
               onClick={() => setSelectedAppointment(appointment)}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <img
-                    src={appointment.patientAvatar}
-                    alt={appointment.patientName}
+                    src={
+                      appointment.patientAvatar ||
+                      appointment.patient?.avatar ||
+                      "https://via.placeholder.com/150"
+                    }
+                    alt={
+                      appointment.patientName ||
+                      appointment.patient?.name ||
+                      "Patient"
+                    }
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>
                     <h3 className="font-semibold text-gray-900">
-                      {appointment.patientName}
+                      {appointment.patientName ||
+                        appointment.patient?.name ||
+                        "Unknown Patient"}
                     </h3>
-                    <p className="text-sm text-gray-600">{appointment.type}</p>
+                    <p className="text-sm text-gray-600">
+                      {appointment.type || "Consultation"}
+                    </p>
                     <p className="text-xs text-gray-500">
-                      {appointment.condition}
+                      {appointment.condition ||
+                        appointment.patient?.condition ||
+                        ""}
                     </p>
                   </div>
                 </div>
@@ -378,7 +265,10 @@ const AppointmentsList = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleStatusUpdate(appointment.id, "In Progress");
+                          handleStatusUpdate(
+                            appointment._id || appointment.id,
+                            "In Progress"
+                          );
                         }}
                         className="px-2 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700 transition-colors"
                         disabled={updateAppointmentMutation.isPending}
@@ -388,7 +278,10 @@ const AppointmentsList = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleStatusUpdate(appointment.id, "Cancelled");
+                          handleStatusUpdate(
+                            appointment._id || appointment.id,
+                            "Cancelled"
+                          );
                         }}
                         className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
                         disabled={updateAppointmentMutation.isPending}
@@ -402,7 +295,10 @@ const AppointmentsList = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleStatusUpdate(appointment.id, "Completed");
+                        handleStatusUpdate(
+                          appointment._id || appointment.id,
+                          "Completed"
+                        );
                       }}
                       className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors"
                       disabled={updateAppointmentMutation.isPending}
