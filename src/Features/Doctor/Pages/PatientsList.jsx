@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  getAllPatients,
+  createPatient,
+  updatePatient,
+  deletePatient,
+} from "../../../Api/Services/patients.js";
 
 const AddPatientModal = ({ onClose, onSubmit, isSubmitting = false }) => {
   const [formData, setFormData] = useState({
@@ -438,13 +444,11 @@ const initialPatientsData = [
 const usePatientsQuery = () => {
   return useQuery({
     queryKey: ["patients"],
-    queryFn: async () => {
-      // Simulate API call - replace with actual API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      return initialPatientsData;
-    },
+    queryFn: getAllPatients,
     staleTime: 5 * 60 * 1000, // 5 minutes
     cacheTime: 10 * 60 * 1000, // 10 minutes
+    retry: 2,
+    select: (data) => (Array.isArray(data) ? data : []),
   });
 };
 
@@ -452,31 +456,17 @@ const useAddPatientMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (newPatientData) => {
-      // Simulate API call - replace with actual API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      const currentPatients = queryClient.getQueryData(["patients"]) || [];
-      const newPatient = {
-        ...newPatientData,
-        id: Math.max(...currentPatients.map((p) => p.id), 0) + 1,
-        avatar: `https://images.unsplash.com/photo-${
-          Math.random() > 0.5
-            ? "1507003211169-0a1dd7228f2d"
-            : "1494790108755-2616b612b47c"
-        }?w=150&h=150&fit=crop&crop=face`,
-        points: 0,
-        status: "Active",
-        lastVisit: new Date().toISOString().split("T")[0],
-        nextAppointment: null,
-        appointmentHistory: [],
-      };
-      return newPatient;
-    },
+    mutationFn: createPatient,
     onSuccess: (newPatient) => {
       // Update the cache with the new patient
       queryClient.setQueryData(["patients"], (oldPatients) => {
         return [...(oldPatients || []), newPatient];
       });
+      // Invalidate to refetch fresh data
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
+    },
+    onError: (error) => {
+      console.error("Failed to add patient:", error);
     },
   });
 };
@@ -491,19 +481,26 @@ const PatientsList = () => {
   const addPatientMutation = useAddPatientMutation();
 
   // Filter patients based on search term
-  const filteredPatients = patients.filter(
-    (patient) =>
-      patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.condition.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.bloodType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.nextAppointment?.type
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      patient.nextAppointment?.date
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase())
-  );
+  const filteredPatients = patients.filter((patient) => {
+    if (!searchTerm) return true;
+
+    const searchLower = searchTerm.toLowerCase();
+    const name = patient.name?.toLowerCase() || "";
+    const condition = patient.condition?.toLowerCase() || "";
+    const email = patient.email?.toLowerCase() || "";
+    const bloodType = patient.bloodType?.toLowerCase() || "";
+    const appointmentType = patient.nextAppointment?.type?.toLowerCase() || "";
+    const appointmentDate = patient.nextAppointment?.date?.toLowerCase() || "";
+
+    return (
+      name.includes(searchLower) ||
+      condition.includes(searchLower) ||
+      email.includes(searchLower) ||
+      bloodType.includes(searchLower) ||
+      appointmentType.includes(searchLower) ||
+      appointmentDate.includes(searchLower)
+    );
+  });
 
   const handlePatientClick = (patient) => {
     setSelectedPatient(patient);
@@ -535,12 +532,22 @@ const PatientsList = () => {
 
   if (isError) {
     return (
-      <div className="flex flex-col h-full justify-center items-center">
+      <div className="flex flex-col h-full justify-center items-center p-6">
         <div className="text-red-600 text-xl mb-4">⚠️</div>
-        <p className="text-red-600">Error loading patients: {error?.message}</p>
+        <p className="text-red-600 font-semibold mb-2">
+          Error Loading Patients
+        </p>
+        <p className="text-gray-600 text-sm mb-4">
+          {error?.message || "Failed to load patients data"}
+        </p>
+        {error?.message?.includes("Failed to fetch") && (
+          <p className="text-sm text-gray-500 mb-4">
+            💡 Make sure the backend is running on http://localhost:5002
+          </p>
+        )}
         <button
           onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           Retry
         </button>
