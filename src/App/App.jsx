@@ -7,7 +7,7 @@ import ClinicLandingPage from "../Features/Home/Pages/ClinicLandingPage";
 import DoctorDash from "../Features/Doctor/Pages/DoctorDash";
 import PatientDash from "../Features/Patient/Pages/PatientDash";
 // import ButtonExample from "../_themeUseExample/buttonExample";
-import PatietAi from "../Features/Doctor/Pages/AiPage";
+import PatietAi from "../Features/Doctor/Pages/PatientAi";
 import DoctorSpecialtyAI from "../Features/Patient/Pages/AiPage";
 
 // Import global routing here
@@ -19,8 +19,8 @@ function App() {
       {/* <CreateAppointment /> */}
       {/* <PatientDash /> */}
       {/* <ButtonExample /> */}
-      <PatietAi />
-      {/* <DoctorSpecialtyAI/> */}
+      {/* <PatietAi /> */}
+      {/* <DoctorSpecialtyAI /> */}
     </>
   );
 }

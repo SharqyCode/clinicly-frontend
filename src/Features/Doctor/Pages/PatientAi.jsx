@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function PatietAi() {
+export default function PatientAi() {
   const [symptoms, setSymptoms] = useState("");
   const [notes, setNotes] = useState("");
   const [files, setFiles] = useState([]);
@@ -38,7 +38,7 @@ export default function PatietAi() {
             {
               text: `You are a medical AI. Return EXACTLY 3 diagnoses in this strict format:
 Condition: <name>
-Confidence: <percentage>`
+Confidence: <percentage>`,
             },
             { text: `Symptoms: ${symptoms}` },
             { text: `Notes: ${notes}` },
@@ -83,7 +83,7 @@ Confidence: <percentage>`
         .slice(0, 3)
         .map((b) => {
           const name = b.split(/Confidence:/)[0].trim();
-          let confidence = Math.floor(50 + Math.random() * 40); 
+          let confidence = Math.floor(50 + Math.random() * 40);
           return {
             name: name,
             confidence: `${confidence}%`,
@@ -114,7 +114,9 @@ Confidence: <percentage>`
           <div>
             <p className="font-medium mb-3">Upload Medical Files</p>
             <label className="w-full h-56 border-2 border-dashed border-gray-300 rounded-lg flex flex-col justify-center items-center cursor-pointer">
-              <p className="text-gray-600 font-medium">Drag and drop files here</p>
+              <p className="text-gray-600 font-medium">
+                Drag and drop files here
+              </p>
               <p className="text-sm text-gray-400">Or click to browse</p>
 
               <input
@@ -146,27 +148,30 @@ Confidence: <percentage>`
           />
 
           <button
-  onClick={handleSubmit}
-  disabled={loading}
-  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mx-auto block"
->
-  {loading ? "Analyzing..." : "Submit"}
-</button>
-
+            onClick={handleSubmit}
+            disabled={loading}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mx-auto block"
+          >
+            {loading ? "Analyzing..." : "Submit"}
+          </button>
         </div>
 
         <div className="space-y-8">
           <div>
             <h2 className="text-3xl font-semibold mb-4">AI Suggestions</h2>
             {suggestions.length === 0 && (
-              <p className="text-gray-500 text-sm">Results will appear here...</p>
+              <p className="text-gray-500 text-sm">
+                Results will appear here...
+              </p>
             )}
 
             {suggestions.map((item, index) => (
               <div key={index} className="mb-4">
                 <p className="font-medium">{item.name}</p>
                 {item.confidence && (
-                  <p className="text-sm text-gray-500">Confidence: {item.confidence}</p>
+                  <p className="text-sm text-gray-500">
+                    Confidence: {item.confidence}
+                  </p>
                 )}
               </div>
             ))}

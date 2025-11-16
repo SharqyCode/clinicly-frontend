@@ -4,7 +4,8 @@ export default function DoctorSpecialtyAI() {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState([]);
-  const [medFiles, setMedFiles] = useState([]);([]);
+  const [medFiles, setMedFiles] = useState([]);
+  [];
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -20,14 +21,14 @@ export default function DoctorSpecialtyAI() {
         },
       ];
 
-
       // Convert medication files to base64 FULL CONTENT for Gemini analysis
       const medFilesBase64 = await Promise.all(
         (medFiles || []).map(
           (file) =>
             new Promise((resolve) => {
               const reader = new FileReader();
-              reader.onload = () => resolve({ name: file.name, data: reader.result });
+              reader.onload = () =>
+                resolve({ name: file.name, data: reader.result });
               reader.readAsDataURL(file);
             })
         )
@@ -35,8 +36,7 @@ export default function DoctorSpecialtyAI() {
 
       // Build a detailed medication content block for Gemini
       const medicationBlock = medFilesBase64.length
-        ?
-          "\n\nUploaded Medication Files (Base64 Included):\n" +
+        ? "\n\nUploaded Medication Files (Base64 Included):\n" +
           medFilesBase64
             .map(
               (f) =>
@@ -47,9 +47,11 @@ export default function DoctorSpecialtyAI() {
         : "";
 
       // Append the medication details (full Base64) into the prompt
-contents[0].parts.push({ text: medicationBlock });
-      const medicationNote = medFilesBase64.length? "Uploaded Medications/Treatments:" +
-          medFilesBase64.map((f) => `- ${f.name}`).join("") + ""
+      contents[0].parts.push({ text: medicationBlock });
+      const medicationNote = medFilesBase64.length
+        ? "Uploaded Medications/Treatments:" +
+          medFilesBase64.map((f) => `- ${f.name}`).join("") +
+          ""
         : "";
 
       // Append medication files info to the prompt
@@ -89,7 +91,7 @@ contents[0].parts.push({ text: medicationBlock });
       setResult(parsed.slice(0, 3));
     } catch (err) {
       console.error(err);
-      alert("خطأ من API");
+      alert("خطأ من API", err);
     }
     setLoading(false);
   };
@@ -109,9 +111,13 @@ contents[0].parts.push({ text: medicationBlock });
 
           {/* Upload Medication / Treatment Files */}
           <div>
-            <p className="font-medium mb-3">Upload Medication / Treatment Files</p>
+            <p className="font-medium mb-3">
+              Upload Medication / Treatment Files
+            </p>
             <label className="w-full h-40 border-2 border-dashed border-gray-300 rounded-lg flex flex-col justify-center items-center cursor-pointer">
-              <p className="text-gray-600 font-medium">Drag and drop files here</p>
+              <p className="text-gray-600 font-medium">
+                Drag and drop files here
+              </p>
               <p className="text-sm text-gray-400">Or click to browse</p>
 
               <input
@@ -121,7 +127,9 @@ contents[0].parts.push({ text: medicationBlock });
                 onChange={(e) => setMedFiles(Array.from(e.target.files))}
               />
 
-              <button className="mt-4 px-4 py-2 bg-gray-100 rounded-md">Upload Files</button>
+              <button className="mt-4 px-4 py-2 bg-gray-100 rounded-md">
+                Upload Files
+              </button>
             </label>
 
             {medFiles?.length > 0 && (
@@ -152,17 +160,19 @@ contents[0].parts.push({ text: medicationBlock });
           {result.map((item, i) => (
             <div key={i} className="mb-5 border p-4 rounded-lg shadow-sm">
               <p className="font-medium text-lg">Condition: {item.condition}</p>
-              <p className="text-sm text-gray-600">Specialty: {item.specialty}</p>
+              <p className="text-sm text-gray-600">
+                Specialty: {item.specialty}
+              </p>
               <p className="text-sm text-gray-600">Severity: {item.severity}</p>
-<div
-  className={`h-2 w-full rounded mt-1 ${
-    item.severity === 'High'
-      ? 'bg-red-500'
-      : item.severity === 'Moderate'
-      ? 'bg-yellow-500'
-      : 'bg-green-500'
-  }`}
-></div>
+              <div
+                className={`h-2 w-full rounded mt-1 ${
+                  item.severity === "High"
+                    ? "bg-red-500"
+                    : item.severity === "Moderate"
+                    ? "bg-yellow-500"
+                    : "bg-green-500"
+                }`}
+              ></div>
             </div>
           ))}
         </div>
