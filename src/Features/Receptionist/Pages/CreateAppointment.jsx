@@ -11,7 +11,7 @@ import DoctorTime from "../Components/DoctorTime";
 import ConfirmBooking from "../Components/confirmBooking";
 import PatientSearch from "../Components/PatientSearch";
 import { createAppointment } from "../../../Api/Services/appointmentService";
-import { queryClient } from "../../../App/App";
+import { queryClient } from "../../../App/main";
 import Snackbar from "@mui/material/Snackbar";
 
 export default function CreateAppointment() {

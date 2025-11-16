@@ -1,5 +1,5 @@
 
-const BASE_URL = "http://localhost:5002/api";
+const BASE_URL = "http://localhost:5000/api";
 
 
 async function handleResponse(response) {

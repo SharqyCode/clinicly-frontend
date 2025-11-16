@@ -1,8 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation } from "@tanstack/react-query";
 import React from "react";
 import { createAppointment } from "../../../Api/Services/appointmentService";
-import { queryClient } from "../../../App/App";
-
+import { queryClient } from "../../../App/main";
 export default function ConfirmBooking({
   activePatient,
   activeDoctor,

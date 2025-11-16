@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 
 import homeIcon from "../../../assets/homelogo.svg";
 import calender from "../../../assets/calender.svg";
