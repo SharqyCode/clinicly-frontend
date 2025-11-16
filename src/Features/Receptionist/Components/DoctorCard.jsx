@@ -4,6 +4,7 @@ import { isActiveDoctor } from "../Utils/doctorListHelpers";
 import { Link } from "react-router";
 
 export default function DoctorCard({ doctor, activeDoctor }) {
+  console.log(doctor);
   return (
     <div
       className={clsx(
@@ -28,9 +29,9 @@ export default function DoctorCard({ doctor, activeDoctor }) {
       </div>
       <div className="avatar">
         <img
-          src="https://cdn-bio.cancercenter.com/media/bios/b0f31411-320a-4e84-bcf4-d3b34ce22d0d/cc_specific/abouelezz-khaled.jpg"
+          src={doctor.userId.profileImage ? doctor.userId.profileImage : null}
           className="h-48 aspect-square rounded-lg"
-          alt=""
+          alt="Doctor's profile picture"
         />
       </div>
     </div>

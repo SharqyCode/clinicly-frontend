@@ -33,12 +33,13 @@ export default function PatientSearch({
     queryFn: getAllPatients,
   });
 
-  console.log(activePatient);
+  // console.log(activePatient);
 
+  // console.log(patients);
   // Filter patients based on any filled field
   const filteredPatients = useMemo(() => {
-    if (!patients?.patients) return [];
-    return patients.patients.filter((p) => {
+    if (!patients?.data) return [];
+    return patients.data.filter((p) => {
       const matchesPhone = phone ? p.userId?.phone?.includes(phone) : true;
       const matchesEmail = email
         ? p.userId?.email?.toLowerCase().includes(email.toLowerCase())
@@ -91,7 +92,7 @@ export default function PatientSearch({
               setEmail("");
               setActivePatient(null);
             }}
-            disabled={!activePatient || user.role}
+            disabled={!activePatient}
           >
             Reset
           </button>

@@ -19,7 +19,7 @@ export default function CreateAppointment() {
     fullName: "Pew Pewson",
     phone: "01234567890",
     email: "pew@pewmail.com",
-    role: "patient",
+    role: "receptionist",
     _id: "6915892272440581fe345e97",
   };
 
@@ -69,7 +69,8 @@ export default function CreateAppointment() {
           activeDoctor={activeDoctor}
         />
       )}
-      {activeDate && (
+
+      {activeDate && activeDoctor && (
         <DoctorTime
           doctor={activeDoctor}
           date={activeDate}
@@ -77,6 +78,7 @@ export default function CreateAppointment() {
           setChosenTime={setChosenTime}
         />
       )}
+
       <ConfirmBooking
         activePatient={activePatient}
         activeDate={activeDate}

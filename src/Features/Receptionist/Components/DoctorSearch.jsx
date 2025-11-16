@@ -6,7 +6,11 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllDoctors } from "../../../Api/Services/doctorService";
 
 export default function DoctorSearch({ activeDoctor, setActiveDoctor }) {
-  const { data: doctors } = useQuery({
+  const {
+    data: doctors,
+    isError,
+    isLoading,
+  } = useQuery({
     queryKey: ["Doctors"],
     queryFn: getAllDoctors,
   });
@@ -16,6 +20,14 @@ export default function DoctorSearch({ activeDoctor, setActiveDoctor }) {
     name: "",
     phone: "",
   });
+
+  if (isLoading) {
+    return "Loading Doctors...";
+  }
+
+  if (isError) {
+    return "Error Loading Doctors...";
+  }
 
   const filtered = useMemo(() => {
     if (!doctors?.doctors) return [];
@@ -32,6 +44,7 @@ export default function DoctorSearch({ activeDoctor, setActiveDoctor }) {
       );
     });
   }, [doctors, filters]);
+
   return (
     <div className="mt-8 px-8">
       <Formtitle text="Step 3: Search for a doctor" />

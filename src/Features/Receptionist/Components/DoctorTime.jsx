@@ -14,8 +14,10 @@ export default function DoctorTime({
     staleTime: 1000 * 60 * 5, // network request after 5 minutes
   });
 
-  if (isLoading) return "Loading";
-  if (isError) return "Error";
+  console.log(data);
+
+  if (isLoading) return "Loading Time Slots...";
+  if (isError) return "Error Loading Time Slots";
 
   if (isSuccess) {
     const { slots } = data;
@@ -28,7 +30,7 @@ export default function DoctorTime({
             return (
               <label
                 key={slot.time}
-                className="flex items-center my-2 gap-4 rounded-lg border border-solid border-[#dbdfe6] p-[15px]"
+                className="flex items-center my-2 gap-4 rounded-lg border border-solid border-[#dbdfe6] p-[15px] has-[input:disabled]:opacity-50"
               >
                 <input
                   type="radio"
@@ -41,7 +43,7 @@ export default function DoctorTime({
                   disabled={!slot.available}
                 />
                 <div className="flex grow flex-col">
-                  <p className="text-[#111318] text-sm font-medium leading-normal">
+                  <p className="text-[#111318] text-sm font-medium leading-norma">
                     {slot.time}
                   </p>
                 </div>
