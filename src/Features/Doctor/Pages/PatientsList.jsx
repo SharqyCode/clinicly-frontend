@@ -9,13 +9,25 @@ import {
 
 const AddPatientModal = ({ onClose, onSubmit, isSubmitting = false }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    gender: "Male",
-    phone: "",
+    // User fields
+    firstName: "",
+    lastName: "",
     email: "",
-    condition: "",
+    password: "",
+    phone: "",
+    // Patient fields
+    dateOfBirth: "",
+    gender: "male",
     bloodType: "A+",
+    condition: "",
+    // Address fields
+    street: "",
+    area: "",
+    city: "",
+    // Emergency contact fields
+    emergencyContactName: "",
+    emergencyContactPhone: "",
+    emergencyContactRelation: "Family",
   });
 
   const handleInputChange = (e) => {
@@ -28,17 +40,69 @@ const AddPatientModal = ({ onClose, onSubmit, isSubmitting = false }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.name && formData.age && formData.phone && formData.email) {
-      onSubmit({
-        ...formData,
-        age: parseInt(formData.age),
-      });
-    }
-  };
 
+    // Validation
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.password ||
+      !formData.phone ||
+      !formData.dateOfBirth ||
+      !formData.gender ||
+      !formData.street ||
+      !formData.area ||
+      !formData.city ||
+      !formData.emergencyContactName ||
+      !formData.emergencyContactPhone ||
+      !formData.emergencyContactRelation
+    ) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    // Validate phone format (8-15 digits only)
+    const phoneRegex = /^\d{8,15}$/;
+    if (!phoneRegex.test(formData.phone.replace(/\D/g, ""))) {
+      alert("Phone number must be 8-15 digits");
+      return;
+    }
+
+    // Validate emergency contact phone (8-15 digits only)
+    if (!phoneRegex.test(formData.emergencyContactPhone.replace(/\D/g, ""))) {
+      alert("Emergency contact phone must be 8-15 digits");
+      return;
+    }
+
+    onSubmit({
+      // User fields
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      phone: formData.phone.replace(/\D/g, ""), // Remove non-digits
+      // Patient fields
+      dateOfBirth: formData.dateOfBirth,
+      gender: formData.gender,
+      bloodType: formData.bloodType,
+      condition: formData.condition,
+      // Address
+      address: {
+        street: formData.street,
+        area: formData.area,
+        city: formData.city,
+      },
+      // Emergency contact
+      emergencyContact: {
+        name: formData.emergencyContactName,
+        phone: formData.emergencyContactPhone.replace(/\D/g, ""), // Remove non-digits
+        relation: formData.emergencyContactRelation,
+      },
+    });
+  };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[95vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900">Add New Patient</h2>
           <button
@@ -61,115 +125,257 @@ const AddPatientModal = ({ onClose, onSubmit, isSubmitting = false }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Personal Information */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name *
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            />
-          </div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Personal Information
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  First Name *
+                </label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Last Name *
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+            </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Password *
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone *
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="+1 (555) 123-4567"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Date of Birth *
+                </label>
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={formData.dateOfBirth}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Gender *
+                </label>
+                <select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Blood Type
+                </label>
+                <select
+                  name="bloodType"
+                  value={formData.bloodType}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Age *
+                Medical Condition
               </label>
               <input
-                type="number"
-                name="age"
-                value={formData.age}
+                type="text"
+                name="condition"
+                value={formData.condition}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="e.g., Hypertension, Diabetes"
+              />
+            </div>
+          </div>
+
+          {/* Address Information */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Address
+            </h3>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Street *
+              </label>
+              <input
+                type="text"
+                name="street"
+                value={formData.street}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Gender
-              </label>
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
+
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Area *
+                </label>
+                <input
+                  type="text"
+                  name="area"
+                  value={formData.area}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  City *
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
             </div>
           </div>
 
+          {/* Emergency Contact */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone *
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="+1 (555) 123-4567"
-              required
-            />
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Emergency Contact
+            </h3>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Contact Name *
+              </label>
+              <input
+                type="text"
+                name="emergencyContactName"
+                value={formData.emergencyContactName}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Contact Phone *
+                </label>
+                <input
+                  type="tel"
+                  name="emergencyContactPhone"
+                  value={formData.emergencyContactPhone}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Relation *
+                </label>
+                <select
+                  name="emergencyContactRelation"
+                  value={formData.emergencyContactRelation}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                >
+                  <option value="Family">Family</option>
+                  <option value="Friend">Friend</option>
+                  <option value="Guardian">Guardian</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email *
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Primary Condition
-            </label>
-            <input
-              type="text"
-              name="condition"
-              value={formData.condition}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="e.g., Hypertension, Diabetes"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Blood Type
-            </label>
-            <select
-              name="bloodType"
-              value={formData.bloodType}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="A+">A+</option>
-              <option value="A-">A-</option>
-              <option value="B+">B+</option>
-              <option value="B-">B-</option>
-              <option value="AB+">AB+</option>
-              <option value="AB-">AB-</option>
-              <option value="O+">O+</option>
-              <option value="O-">O-</option>
-            </select>
-          </div>
-
+          {/* Buttons */}
           <div className="flex gap-3 pt-4">
             <button
               type="button"
@@ -448,7 +654,22 @@ const usePatientsQuery = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes
     cacheTime: 10 * 60 * 1000, // 10 minutes
     retry: 2,
-    select: (data) => (Array.isArray(data) ? data : []),
+    select: (data) => {
+      console.log("Patients data from backend:", data);
+      // Handle both array and object responses
+      if (Array.isArray(data)) {
+        return data;
+      }
+      if (
+        data &&
+        typeof data === "object" &&
+        data.data &&
+        Array.isArray(data.data)
+      ) {
+        return data.data;
+      }
+      return [];
+    },
   });
 };
 
@@ -460,7 +681,11 @@ const useAddPatientMutation = () => {
     onSuccess: (newPatient) => {
       // Update the cache with the new patient
       queryClient.setQueryData(["patients"], (oldPatients) => {
-        return [...(oldPatients || []), newPatient];
+        // Ensure oldPatients is an array
+        if (!Array.isArray(oldPatients)) {
+          return [newPatient];
+        }
+        return [...oldPatients, newPatient];
       });
       // Invalidate to refetch fresh data
       queryClient.invalidateQueries({ queryKey: ["patients"] });
@@ -994,9 +1219,9 @@ const PatientsList = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredPatients.map((patient) => (
+              {filteredPatients.map((patient, index) => (
                 <tr
-                  key={patient.id}
+                  key={patient._id || patient.id || `patient-${index}`}
                   className="hover:bg-gray-50 cursor-pointer transition-colors"
                   onClick={() => handlePatientClick(patient)}
                 >
