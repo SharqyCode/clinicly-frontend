@@ -1,10 +1,15 @@
-import axios from "axios"
+import axios from "axios";
 
-const ENDPOINT_URL = `${import.meta.env.VITE_BASE_URL}/doctors`
+const API_URL = "http://localhost:5000/api/admin";
 
-export const getAllDoctors = async () => {
-    const pew = await axios.get(ENDPOINT_URL);
-    const pewData = pew.data;
-    console.log(pewData);
-    return pewData;
-}
+export const createDoctor = async (doctorData) => {
+  const token = localStorage.getItem("accessToken"); // read token
+
+  const response = await axios.post(`${API_URL}/create-user`, doctorData, {
+    headers: {
+      Authorization: `Bearer ${token}`, // include token
+    },
+  });
+
+  return response.data;
+};
