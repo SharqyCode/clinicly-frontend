@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import ProfileInfo from '../components/ProfileInfo';
-import {EditeProfile} from '../components/EditeProfile'
-import { getPatientProfile } from '../../../Api/Services/PatientService';
+import ProfileInfo from "../components/ProfileInfo";
+import EditeProfile from "../components/EditeProfile";
+import { getPatientProfile } from "../../../Api/Services/patientService";
 export default function Profile() {
-    const patientId = localStorage.getItem("patientId");
-    const { data, isLoading, isError } = useQuery({
+  const patientId = localStorage.getItem("patientId");
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["patientProfile", patientId],
     queryFn: () => getPatientProfile(patientId),
   });
@@ -38,4 +38,3 @@ export default function Profile() {
     </div>
   );
 }
-
