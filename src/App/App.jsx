@@ -1,27 +1,45 @@
-import { BrowserRouter } from "react-router";
-import ButtonExample from "../_themeUseExample/buttonExample";
-import Landing from "../Features/Home/Pages/Landing";
-import Profile from "../Features/Patient/Pages/Profile";
-import CreateAppointment from "../Features/Receptionist/Pages/CreateAppointment";
-import ClinicLandingPage from "../Features/Home/Pages/ClinicLandingPage";
-import DoctorDash from "../Features/Doctor/Pages/DoctorDash";
-import PatientDash from "../Features/Patient/Pages/PatientDash";
-// import ButtonExample from "../_themeUseExample/buttonExample";
-import PatietAi from "../Features/Doctor/Pages/PatientAi";
-import DoctorSpecialtyAI from "../Features/Patient/Pages/AiPage";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 
-// Import global routing here
+// Auth Pages
+import Signup from "./../Features/Auth/Pages/signup.jsx";
+import Login from "./../Features/Auth/Pages/Login.jsx";
+
+// Admin Layout + Pages
+import AdminLayout from "./../Features/Admin/Layout/Layout.jsx";
+import Dashboard from "./../Features/Admin/Pages/Dashboard.jsx";
+import Patients from "./../Features/Admin/Pages/Patients.jsx";
+import CreateDoctor from "./../Features/Admin/Pages/CreateDoctor.jsx";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { refetchOnWindowFocus: false, retry: 1 },
+    mutations: { retry: 1 },
+  },
+});
+
 function App() {
   return (
-    <>
-      {/* <ClinicLandingPage /> */}
-      {/* <Landing /> */}
-      {/* <CreateAppointment /> */}
-      {/* <PatientDash /> */}
-      {/* <ButtonExample /> */}
-      {/* <PatietAi /> */}
-      {/* <DoctorSpecialtyAI /> */}
-    </>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Toaster position="bottom-center" />
+
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* Admin Nested Routes */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="patients" element={<Patients />} />
+            <Route path="create-doctor" element={<CreateDoctor />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

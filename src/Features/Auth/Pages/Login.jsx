@@ -1,19 +1,131 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { loginPatient } from "../api/auth"; // Your API function
+import toast from "react-hot-toast";
 
-export default function Login() {
-    const [userData, setUserData] = useState([])
-    useEffect(()=>{
-        try {
+const Login = () => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({});
+  const [googlePrefill, setGooglePrefill] = useState(false); // flag to disable prefilled fields
 
-            await fetch("hsdhjshjsda")
-        }
-catch (err) {
-    console.log(err);
-}
-    },[])
+  // Check for Google redirect params
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const email = params.get("email") || "";
+    const firstName = params.get("firstName") || "";
+    const lastName = params.get("lastName") || "";
+    const profileImage = params.get("profileImage") || "";
 
+    if (email) {
+      setFormData((prev) => ({ ...prev, email }));
+      setGooglePrefill(true); // disable email input
+    }
+
+    if (token) {
+      // User already exists → auto login
+      localStorage.setItem("accessToken", token);
+      toast.success(`Welcome back ${firstName}`);
+      window.location.href = "/"; // redirect to dashboard or home
+    }
+  }, []);
+
+  const mutation = useMutation({
+    mutationFn: loginPatient,
+    onSuccess: (data) => {
+      localStorage.setItem("accessToken", data.accessToken);
+      toast.success("Login successful!");
+      window.location.href = "/"; // redirect to dashboard
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "Login failed.");
+    },
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.email.trim()) newErrors.email = "Email is required.";
+    if (!formData.password.trim()) newErrors.password = "Password is required.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+    mutation.mutate(formData);
+  };
 
   return (
-    <div>{userData}</div>
-  )
-}
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-light-secondary)]">
+      <div className="bg-[var(--color-bg-light-primary)] p-10 rounded-2xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-[var(--color-accent-primary-main)] text-center">
+          Patient Login
+        </h2>
+
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Email */}
+          <div>
+            <label className="block mb-1 font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              className="input w-full"
+              required
+              disabled={googlePrefill} // disable if prefilled from Google
+            />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block mb-1 font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              className="input w-full"
+              required
+            />
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-[var(--color-accent-primary-main)] text-white py-2 rounded hover:bg-[var(--color-accent-primary-dark)] transition"
+          >
+            {mutation.isLoading ? "Logging in..." : "Login"}
+          </button>
+
+          {/* Google login */}
+          <div className="flex justify-center my-4">
+            <a
+              href="http://localhost:5000/api/oauth/google-login"
+              className="flex items-center justify-center w-full max-w-md border border-gray-300 rounded-lg py-2 px-4 hover:bg-gray-100 transition"
+            >
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                alt="Google Logo"
+                className="w-5 h-5 mr-2"
+              />
+              Continue with Google
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
