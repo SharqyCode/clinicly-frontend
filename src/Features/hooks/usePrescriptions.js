@@ -3,6 +3,8 @@ import {
   getPrescriptionsByDoctor,
   getPrescriptionsByPatient,
   deletePrescription,
+  createPrescription,
+  updatePrescription,
 } from "../../Api/Services/prescriptions.js";
 
 /**
@@ -37,7 +39,7 @@ export const usePrescriptions = ({ doctorId, patientId, mode = "doctor" }) => {
 
   // Main query for fetching prescriptions
   const {
-    data: prescriptions = [],
+    data: prescriptionsData = [],
     isLoading: loading,
     error,
     refetch: refreshPrescriptions,
@@ -46,12 +48,69 @@ export const usePrescriptions = ({ doctorId, patientId, mode = "doctor" }) => {
     queryFn,
     enabled:
       (mode === "doctor" && !!doctorId) || (mode === "patient" && !!patientId),
-    select: (data) => (Array.isArray(data) ? data : []),
+    select: (data) => {
+      console.log("Prescriptions data from backend:", data);
+      // Handle both array and object responses
+      if (Array.isArray(data)) {
+        return data;
+      }
+      if (
+        data &&
+        typeof data === "object" &&
+        data.data &&
+        Array.isArray(data.data)
+      ) {
+        return data.data;
+      }
+      return [];
+    },
     retry: (failureCount, error) => {
       // Don't retry on 404 (doctor/patient not found)
       if (error.message.includes("404")) return false;
       // Retry on network errors up to 2 times
       return failureCount < 2;
+    },
+  });
+
+  const prescriptions = Array.isArray(prescriptionsData)
+    ? prescriptionsData
+    : [];
+
+  // Create mutation
+  const createMutation = useMutation({
+    mutationFn: createPrescription,
+    onSuccess: (newPrescription) => {
+      console.log("Prescription created successfully:", newPrescription);
+      // Update cache optimistically
+      queryClient.setQueryData(queryKey, (oldData) => {
+        if (!Array.isArray(oldData)) {
+          return [newPrescription];
+        }
+        return [...oldData, newPrescription];
+      });
+      // Invalidate to refetch fresh data
+      queryClient.invalidateQueries({ queryKey: ["prescriptions"] });
+    },
+    onError: (error) => {
+      console.error("Failed to create prescription:", error);
+    },
+  });
+
+  // Update mutation
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => updatePrescription(id, data),
+    onSuccess: (updatedPrescription, { id }) => {
+      console.log("Prescription updated successfully:", updatedPrescription);
+      // Update cache optimistically
+      queryClient.setQueryData(queryKey, (oldData) => {
+        if (!Array.isArray(oldData)) return oldData;
+        return oldData.map((p) => (p._id === id ? updatedPrescription : p));
+      });
+      // Invalidate to refetch fresh data
+      queryClient.invalidateQueries({ queryKey: ["prescriptions"] });
+    },
+    onError: (error) => {
+      console.error("Failed to update prescription:", error);
     },
   });
 
@@ -73,6 +132,22 @@ export const usePrescriptions = ({ doctorId, patientId, mode = "doctor" }) => {
     },
   });
 
+  const createPrescriptionMutation = async (data) => {
+    try {
+      return await createMutation.mutateAsync(data);
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const updatePrescriptionMutation = async (id, data) => {
+    try {
+      return await updateMutation.mutateAsync({ id, data });
+    } catch (err) {
+      throw err;
+    }
+  };
+
   const deletePrescriptionById = async (prescriptionId) => {
     try {
       await deleteMutation.mutateAsync(prescriptionId);
@@ -92,8 +167,14 @@ export const usePrescriptions = ({ doctorId, patientId, mode = "doctor" }) => {
       : "",
     refreshPrescriptions,
     deletePrescriptionById,
+    createPrescriptionMutation,
+    updatePrescriptionMutation,
     isDeleting: deleteMutation.isPending,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
     deleteError: deleteMutation.error?.message || "",
+    createError: createMutation.error?.message || "",
+    updateError: updateMutation.error?.message || "",
     setError: () => {}, // Kept for compatibility but not needed with React Query
   };
 };

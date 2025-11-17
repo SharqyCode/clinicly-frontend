@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
 import homeIcon from "../../../assets/homelogo.svg";
@@ -15,6 +15,26 @@ import { useRecentMessages } from "../../hooks/useMessages";
 
 export default function DoctorDash() {
   const [activeView, setActiveView] = useState("dashboard");
+  const [doctorId, setDoctorId] = useState(null);
+
+  // Get doctor ID from JWT token
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        // Decode JWT manually (without external library)
+        const parts = token.split(".");
+        if (parts.length === 3) {
+          const decoded = JSON.parse(atob(parts[1]));
+          if (decoded.id) {
+            setDoctorId(decoded.id);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error decoding token:", err);
+    }
+  }, []);
 
   // Fetch real data using TanStack Query
   const {
@@ -271,10 +291,7 @@ export default function DoctorDash() {
             ) : activeView === "appointments" ? (
               <AppointmentsList />
             ) : activeView === "prescriptions" ? (
-              <PrescriptionsList
-                doctorId="6745b123456789abcdef0123" // Replace with actual doctor ID from auth context
-                viewMode="doctor"
-              />
+              <PrescriptionsList doctorId={doctorId} viewMode="doctor" />
             ) : activeView === "ai-tool" ? (
               <div className="p-4">
                 <h1 className="text-3xl font-bold text-gray-900 mb-6">

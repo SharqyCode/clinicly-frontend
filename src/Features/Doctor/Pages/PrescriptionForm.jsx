@@ -128,10 +128,13 @@ const PrescriptionForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("Form submitted with data:", formData);
+
     try {
       // Validate required fields
-      if (!formData.appointment || !formData.patient || !formData.doctor) {
-        throw new Error("Appointment, patient, and doctor are required");
+      if (!formData.patient || !formData.doctor) {
+        alert("Please fill in patient and doctor information");
+        throw new Error("Patient and doctor are required");
       }
 
       // Validate medications
@@ -140,25 +143,40 @@ const PrescriptionForm = ({
       );
 
       if (validMedications.length === 0) {
+        alert(
+          "Please add at least one complete medication (name, dosage, frequency, and duration are required)"
+        );
         throw new Error("At least one complete medication is required");
       }
 
+      // Build prescription data matching backend schema
       const prescriptionData = {
-        ...formData,
+        patient: formData.patient,
+        doctor: formData.doctor,
         medications: validMedications,
-        createdBy: doctorId, // Assuming the doctor creating is the logged-in user
+        additionalNotes: formData.additionalNotes,
       };
+
+      // Only include appointment if it exists
+      if (formData.appointment && formData.appointment.trim()) {
+        prescriptionData.appointment = formData.appointment;
+      }
+
+      console.log("Sending prescription data:", prescriptionData);
 
       if (isEditMode) {
         await updateMutation.mutateAsync({
           id: prescriptionId,
           data: prescriptionData,
         });
+        alert("Prescription updated successfully!");
       } else {
         await createMutation.mutateAsync(prescriptionData);
+        alert("Prescription created successfully!");
       }
     } catch (err) {
       console.error("Form submission error:", err);
+      alert(`Error: ${err.message}`);
     }
   };
 
@@ -190,6 +208,84 @@ const PrescriptionForm = ({
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Information Section */}
+        <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            Prescription Details
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Patient ID *
+              </label>
+              <input
+                type="text"
+                name="patient"
+                value={formData.patient}
+                onChange={(e) =>
+                  setFormData({ ...formData, patient: e.target.value })
+                }
+                placeholder="Enter patient ID"
+                required
+                readOnly={isEditMode}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-accent-primary-main focus:border-transparent outline-none read-only:bg-gray-100"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Doctor ID *
+              </label>
+              <input
+                type="text"
+                name="doctor"
+                value={formData.doctor}
+                onChange={(e) =>
+                  setFormData({ ...formData, doctor: e.target.value })
+                }
+                placeholder="Enter doctor ID"
+                required
+                readOnly={isEditMode}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-accent-primary-main focus:border-transparent outline-none read-only:bg-gray-100"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Appointment ID
+              </label>
+              <input
+                type="text"
+                name="appointment"
+                value={formData.appointment}
+                onChange={(e) =>
+                  setFormData({ ...formData, appointment: e.target.value })
+                }
+                placeholder="Enter appointment ID (optional)"
+                readOnly={isEditMode}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-accent-primary-main focus:border-transparent outline-none read-only:bg-gray-100"
+              />
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Additional Notes
+            </label>
+            <textarea
+              name="additionalNotes"
+              value={formData.additionalNotes}
+              onChange={(e) =>
+                setFormData({ ...formData, additionalNotes: e.target.value })
+              }
+              placeholder="Any additional notes for the prescription"
+              rows="3"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-accent-primary-main focus:border-transparent outline-none"
+            />
+          </div>
+        </div>
+
+        {/* Medications Section */}
         <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
           <h3 className="text-xl font-semibold text-gray-800 mb-6">
             Medications
