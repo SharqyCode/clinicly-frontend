@@ -25,10 +25,13 @@ export const usePrescriptions = ({ doctorId, patientId, mode = "doctor" }) => {
   // Query function based on mode
   const queryFn = () => {
     if (mode === "patient" && patientId) {
+      console.log("Fetching prescriptions for patient:", patientId);
       return getPrescriptionsByPatient(patientId);
     } else if (mode === "doctor" && doctorId) {
+      console.log("Fetching prescriptions for doctor:", doctorId);
       return getPrescriptionsByDoctor(doctorId);
     }
+    console.log("No ID provided for prescriptions query");
     return Promise.resolve([]);
   };
 

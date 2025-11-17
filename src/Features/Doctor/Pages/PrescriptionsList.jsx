@@ -127,7 +127,7 @@ const PrescriptionsList = ({ doctorId, viewMode = "doctor" }) => {
               in your backend directory.
             </p>
           )}
-          {doctorId === "6745b123456789abcdef0123" && (
+          {doctorId === "69197f018658fc0c1900da1e" && (
             <p className="text-sm mt-2">
               💡 <strong>Note:</strong> Using test doctor ID. Please log in with
               a real doctor account to see prescriptions.
