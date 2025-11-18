@@ -2,13 +2,8 @@ import TextField from "@mui/material/TextField";
 import React, { useState, useMemo } from "react";
 import FormTitle from "./FormTitle";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import {
-  createPatient,
-  getAllPatients,
-} from "../../../Api/Services/patientService";
-import clsx from "clsx";
+import { createPatient, getAllPatients } from "../Api/Services/patientService";
 import PatientList from "./PatientList";
-import { set } from "react-hook-form";
 import PatientFormModal from "./PatientSearch/PatientFormModal";
 
 export default function PatientSearch({
@@ -43,13 +38,13 @@ export default function PatientSearch({
   const createMutation = useMutation({
     mutationFn: createPatient,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["patients"]);
       const { data: patient } = data;
       setIsModalOpen(false);
       setActivePatient(patient); // auto-select after creation
       setName(patient.fullName);
       setEmail(patient.userId.email);
       setPhone(patient.userId.phone);
+      queryClient.invalidateQueries(["patients"]);
     },
   });
 

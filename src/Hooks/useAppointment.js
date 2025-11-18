@@ -6,7 +6,7 @@ import {
     updateAppointment,
     cancelAppointment,
     getAvailableSlots
-} from "../Api/Services/appointmentService";
+} from "../Features/Receptionist/Api/Services/appointmentService";
 
 export const useAppointments = (filters) =>
     useQuery({

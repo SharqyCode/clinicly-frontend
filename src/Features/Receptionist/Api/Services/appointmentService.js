@@ -31,7 +31,7 @@ export const getAvailableSlots = async (doctorId, date) => {
 
 ////////////////////////////
 
-import api from "../axiosInstance";
+import api from "../../../../Api/axiosInstance";
 
 export const getAppointments = async (filters = {}) => {
     const { data } = await api.get("/appointments", { params: filters });

@@ -3,7 +3,7 @@ import Formtitle from "./FormTitle";
 import TextField from "@mui/material/TextField";
 import DoctorList from "./DoctorList";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDoctors } from "../../../Api/Services/doctorService";
+import { getAllDoctors } from "../Api/Services/DoctorService";
 
 export default function DoctorSearch({ activeDoctor, setActiveDoctor }) {
   const {

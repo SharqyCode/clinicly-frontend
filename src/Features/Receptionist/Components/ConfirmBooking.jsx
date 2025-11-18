@@ -1,6 +1,6 @@
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import React from "react";
-import { createAppointment } from "../../../Api/Services/appointmentService";
+import { createAppointment } from "../Api/Services/appointmentService";
 import { queryClient } from "../../../App/main";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Clock, User, Stethoscope } from "lucide-react";
