@@ -11,11 +11,13 @@ const ENDPOINT_URL = `${import.meta.env.VITE_BASE_URL}/appointments`
 //                 "type": "Clinic Visit",
 //                     "notes": null
 // }
-export const createAppointment = async (appointmentData) => {
-    const pew = (await axios.post(ENDPOINT_URL, appointmentData)).data // Add headers later
-    console.log(pew);
-    return pew;
-}
+// export const createAppointment = async (appointmentData) => {
+
+//     console.log("appointmentData", appointmentData);
+//     const pew = (await axios.post(ENDPOINT_URL, appointmentData)).data // Add headers later
+//     console.log("createAppointment", pew);
+//     return pew;
+// }
 
 export const getAvailableSlots = async (doctorId, date) => {
     console.log(doctorId, date);
@@ -31,7 +33,7 @@ export const getAvailableSlots = async (doctorId, date) => {
 
 ////////////////////////////
 
-import api from "../../../../Api/axiosInstance";
+import api from "../axiosInstance";
 
 export const getAppointments = async (filters = {}) => {
     const { data } = await api.get("/appointments", { params: filters });
@@ -43,10 +45,10 @@ export const getAppointmentById = async (id) => {
     return data;
 };
 
-// export const createAppointment = async (payload) => {
-//     const { data } = await api.post("/appointments", payload);
-//     return data;
-// };
+export const createAppointment = async (payload) => {
+    const { data } = await api.post("/appointments", payload);
+    return data;
+};
 
 export const updateAppointment = async (id, payload) => {
     const { data } = await api.put(`/appointments/${id}`, payload);
