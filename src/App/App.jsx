@@ -12,7 +12,8 @@ import AdminLayout from "./../Features/Admin/Layout/Layout.jsx";
 import Dashboard from "./../Features/Admin/Pages/Dashboard.jsx";
 import Patients from "./../Features/Admin/Pages/Patients.jsx";
 import CreateDoctor from "./../Features/Admin/Pages/CreateDoctor.jsx";
-
+import CreateReceptionist from "../Features/Admin/Pages/CreateReceptionist.jsx";
+import UsersManagement from "../Features/Admin/Pages/UsersManagement.jsx";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: false, retry: 1 },
@@ -36,6 +37,8 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="patients" element={<Patients />} />
             <Route path="create-doctor" element={<CreateDoctor />} />
+            <Route path="create-receptionist" element={<CreateReceptionist />} />
+            <Route path="crud-users" element={<UsersManagement />} />
           </Route>
         </Routes>
       </BrowserRouter>
