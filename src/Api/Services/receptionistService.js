@@ -1,6 +1,19 @@
-import api from "../axiosInstance";
+import axios from "axios";
 
-export const getReceptionistDashboard = async () => {
-    const { data } = await api.get("/dashboard/receptionist");
-    return data;
+const API_URL = "http://localhost:5000/api/admin";
+
+export const createReceptionist = async (data) => {
+  const token = localStorage.getItem("accessToken");
+
+  const response = await axios.post(
+    `${API_URL}/create-user`,
+    { ...data, role: "receptionist" }, // Fixed role
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
 };
