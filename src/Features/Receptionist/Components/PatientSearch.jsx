@@ -2,7 +2,7 @@ import TextField from "@mui/material/TextField";
 import React, { useState, useMemo } from "react";
 import FormTitle from "./FormTitle";
 import { useQuery } from "@tanstack/react-query";
-import { getAllPatients } from "../../../Api/Services/patientService";
+import { getAllPatients } from "../../../Api/Services/UserMangementService";
 import clsx from "clsx";
 import PatientList from "./PatientList";
 import { set } from "react-hook-form";
