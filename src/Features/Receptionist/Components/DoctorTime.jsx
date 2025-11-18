@@ -1,6 +1,6 @@
 import FormTitle from "./FormTitle";
 import { useQuery } from "@tanstack/react-query";
-import { getAvailableSlots } from "../../../Api/Services/appointmentService";
+import { getAvailableSlots } from "../Api/Services/appointmentService";
 
 export default function DoctorTime({
   doctor,

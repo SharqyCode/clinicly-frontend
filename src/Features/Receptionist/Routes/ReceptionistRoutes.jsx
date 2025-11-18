@@ -12,6 +12,7 @@ export default function ReceptionistRoutes() {
         <Route index element={<Dashboard />} />
         <Route path="appointments" element={<Appointments />} />
         <Route path="queue" element={<Queue />} />
+        {/* <Route path="create-appointment" element={<CreateAppointment />} /> */}
       </Route>
     </Routes>
   );

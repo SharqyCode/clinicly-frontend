@@ -1,11 +1,11 @@
 import TextField from "@mui/material/TextField";
 import React, { useState, useMemo } from "react";
 import FormTitle from "./FormTitle";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getAllPatients } from "../../../Api/Services/UserMangementService";
+import clsx from "clsx";
 import PatientList from "./PatientList";
 import PatientFormModal from "./PatientSearch/PatientFormModal";
-import { createPatient } from "../Api/Services/patientService";
 
 export default function PatientSearch({
   setActivePatient,

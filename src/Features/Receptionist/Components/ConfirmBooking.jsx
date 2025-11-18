@@ -1,10 +1,9 @@
 import { QueryClient, useMutation } from "@tanstack/react-query";
-import React, { useState } from "react";
-import { createAppointment } from "../../../Api/Services/appointmentService";
+import React from "react";
+import { createAppointment } from "../Api/Services/appointmentService";
 import { queryClient } from "../../../App/main";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Clock, User, Stethoscope } from "lucide-react";
-import { useCreateAppointment } from "../../../Hooks/useAppointment";
 
 export default function ConfirmBooking({
   activePatient,
@@ -13,23 +12,20 @@ export default function ConfirmBooking({
   chosenTime,
   setStatus,
 }) {
-  const { data, mutateAsync } = useCreateAppointment();
-  // const [modalOpen, setModalOpen] = useState(false);
+  const appointmentMutation = useMutation({
+    mutationKey: ["patientAppointments"],
+    mutationFn: createAppointment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patientAppointments"] });
+      setStatus("success");
+    },
+    onError: (err) => {
+      console.error(err.message);
+      setStatus("error");
+    },
+  });
 
-  // const appointmentMutation = useMutation({
-  //   // mutationKey: ["patientAppointments"],
-  //   mutationFn: createAppointment,
-  //   onSuccess: () => {
-  //     // queryClient.invalidateQueries({ queryKey: ["patientAppointments"] });
-  //     setStatus("success");
-  //   },
-  //   onError: (err) => {
-  //     console.error(err);
-  //     setStatus("error");
-  //   },
-  // });
-
-  const handleBooking = async () => {
+  const handleBooking = () => {
     const appointment = {
       patient: activePatient._id,
       doctor: activeDoctor._id,
@@ -40,26 +36,19 @@ export default function ConfirmBooking({
     console.log(activeDate);
     console.log(chosenTime);
     console.log(appointment);
-    try {
-      const res = await mutateAsync(appointment);
-      setStatus("success");
-      console.log(res);
-    } catch (err) {
-      console.error(err);
-      setStatus("error");
-    }
+    appointmentMutation.mutate(appointment);
   };
 
   return (
     <div className="text-center md:text-end mt-8 px-8">
       <button
         className="btn bg-accent-primary-main hover:accent-accent-primary-dark text-text-light disabled:bg-gray-500"
-        onClick={() => document.getElementById("booking_modal").showModal()}
+        onClick={() => document.getElementById("my_modal_2").showModal()}
         disabled={!activeDoctor || !activeDate || !chosenTime}
       >
         Book Appointment
       </button>
-      <dialog id="booking_modal" className="modal">
+      <dialog id="my_modal_2" className="modal">
         <AnimatePresence>
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -127,8 +116,8 @@ export default function ConfirmBooking({
             </div>
 
             {/* Buttons */}
-            <div className="modal-action bg-gray-100 px-6 py-4 flex justify-end gap-3">
-              <form method="dialog" className="flex gap-4">
+            <div className="bg-gray-100 px-6 py-4 flex justify-end gap-3">
+              <form method="dialog flex gap-4">
                 <button className="btn bg-gray-300 hover:bg-gray-400 text-gray-700">
                   Cancel
                 </button>
