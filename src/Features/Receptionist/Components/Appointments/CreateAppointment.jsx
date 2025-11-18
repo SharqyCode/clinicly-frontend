@@ -1,18 +1,13 @@
-import React, { act, use, useState } from "react";
-import DashboardHeader from "../../../Components/Header/DashboardHeader";
-import DoctorSearch from "../Components/DoctorSearch";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAllDoctors } from "../../../Api/Services/doctorService";
-import DoctorList from "../Components/DoctorList";
-import Calendar from "react-calendar";
-import { isDoctorAvailable } from "../Utils/calenderHelpers";
-import DoctorCalender from "../Components/DoctorCalender";
-import DoctorTime from "../Components/DoctorTime";
-import ConfirmBooking from "../Components/confirmBooking";
-import PatientSearch from "../Components/PatientSearch";
-import { createAppointment } from "../../../Api/Services/appointmentService";
-import { queryClient } from "../../../App/main";
+import { useState } from "react";
+import DashboardHeader from "../../../../Components/Header/DashboardHeader";
 import Snackbar from "@mui/material/Snackbar";
+import DoctorSearch from "../DoctorSearch";
+import PatientSearch from "../PatientSearch";
+import DoctorCalender from "../DoctorCalender";
+import ConfirmBooking from "../confirmBooking";
+import DoctorTime from "../DoctorTime";
+import { green, red } from "@mui/material/colors";
+import SnackbarContent from "@mui/material/SnackbarContent";
 
 export default function CreateAppointment() {
   const user = {
@@ -86,12 +81,16 @@ export default function CreateAppointment() {
         chosenTime={chosenTime}
         setStatus={setStatus}
       />
-      <Snackbar
-        open={status}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        message={messages[status] || ""}
-      />
+      <Snackbar open={!!status} autoHideDuration={3000} onClose={handleClose}>
+        <SnackbarContent
+          message={messages[status]}
+          sx={{
+            backgroundColor: status === "success" ? green[500] : red[500],
+            color: "#fff",
+            fontWeight: "600",
+          }}
+        />
+      </Snackbar>
     </div>
   );
 }

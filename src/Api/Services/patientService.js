@@ -21,3 +21,11 @@ export const getAllPatients = async () => {
     console.log(pewData);
     return pewData;
 }
+
+export const createPatient = async (newPatient) => {
+    const pew = await axios.post(ENDPOINT_URL, newPatient);
+    const pewData = pew.data;
+    console.log(pewData);
+    return pewData;
+
+}

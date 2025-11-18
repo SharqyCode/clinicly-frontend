@@ -28,3 +28,38 @@ export const getAvailableSlots = async (doctorId, date) => {
     console.log(pew);
     return pew;
 }
+
+////////////////////////////
+
+import api from "../axiosInstance";
+
+export const getAppointments = async (filters = {}) => {
+    const { data } = await api.get("/appointments", { params: filters });
+    return data;
+};
+
+export const getAppointmentById = async (id) => {
+    const { data } = await api.get(`/appointments/${id}`);
+    return data;
+};
+
+// export const createAppointment = async (payload) => {
+//     const { data } = await api.post("/appointments", payload);
+//     return data;
+// };
+
+export const updateAppointment = async (id, payload) => {
+    const { data } = await api.put(`/appointments/${id}`, payload);
+    return data;
+};
+
+export const cancelAppointment = async (id) => {
+    const { data } = await api.patch(`/appointments/${id}/cancel`);
+    return data;
+};
+
+// export const getAvailableSlots = async (params) => {
+//     const { data } = await api.get("/appointments/available-slots", { params });
+//     return data;
+// };
+

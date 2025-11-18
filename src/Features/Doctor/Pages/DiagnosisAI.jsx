@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function PatientAi() {
+export default function DiagnosisAI() {
   const [symptoms, setSymptoms] = useState("");
   const [notes, setNotes] = useState("");
   const [files, setFiles] = useState([]);

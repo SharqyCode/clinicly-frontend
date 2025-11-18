@@ -20,15 +20,6 @@ export default function DoctorSearch({ activeDoctor, setActiveDoctor }) {
     name: "",
     phone: "",
   });
-
-  if (isLoading) {
-    return "Loading Doctors...";
-  }
-
-  if (isError) {
-    return "Error Loading Doctors...";
-  }
-
   const filtered = useMemo(() => {
     if (!doctors?.doctors) return [];
 
@@ -44,6 +35,14 @@ export default function DoctorSearch({ activeDoctor, setActiveDoctor }) {
       );
     });
   }, [doctors, filters]);
+
+  if (isLoading) {
+    return "Loading Doctors...";
+  }
+
+  if (isError) {
+    return "Error Loading Doctors...";
+  }
 
   return (
     <div className="mt-8 px-8">
