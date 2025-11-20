@@ -4,11 +4,9 @@ import { motion, useInView } from "framer-motion";
 import heroImg from "../assets/Landing/health-professional-team-concept.png";
 import doctorRun from "../assets/Landing/doctorRun.jpg";
 import patientCare from "../assets/Landing/patientCare.jpg";
-
-// Single-file landing page for a single clinic instance
-// - Tailwind classes throughout
-// - Framer Motion for entry animations
-// - Placeholder images used (via.placeholder.com)
+import { Link } from "react-router";
+import HomeNavBar from "../../../Components/Navigation/HomeNavBar";
+import MainFooter from "../../../Components/Footer/MainFooter";
 
 export default function ClinicLandingPage() {
   // counters
@@ -41,34 +39,6 @@ export default function ClinicLandingPage() {
     animate(setYears, 12, 900);
   }, [statsInView]);
 
-  // booking form state (local only - placeholders)
-  const [specialty, setSpecialty] = useState("");
-  const [doctor, setDoctor] = useState("");
-  const [date, setDate] = useState("");
-
-  const doctorsMock = [
-    {
-      id: 1,
-      name: "Dr. Omar Hassan",
-      spec: "General Physician",
-      img: "https://via.placeholder.com/400x300?text=Dr.+Omar",
-    },
-    {
-      id: 2,
-      name: "Dr. Sara Khaled",
-      spec: "Pediatrics",
-      img: "https://via.placeholder.com/400x300?text=Dr.+Sara",
-    },
-    {
-      id: 3,
-      name: "Dr. Amr Fathy",
-      spec: "Dentistry",
-      img: "https://via.placeholder.com/400x300?text=Dr.+Amr",
-    },
-  ];
-
-  const specialties = [...new Set(doctorsMock.map((d) => d.spec))];
-
   function handleApplyDoctor(e) {
     e.preventDefault();
     alert("Thanks! Your application has been received. (placeholder)");
@@ -77,32 +47,7 @@ export default function ClinicLandingPage() {
   return (
     <div className="min-h-screen bg-gray-50 text-slate-800 antialiased">
       {/* NAV */}
-      <nav className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
-            AS
-          </div>
-          <div>
-            <div className="font-semibold">Al Shifa Medical Center</div>
-            <div className="text-xs text-slate-500">Care you can trust</div>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <a
-            href="#book"
-            className="text-sm px-4 py-2 rounded-md hover:bg-slate-100"
-          >
-            Book Appointment
-          </a>
-          <a
-            href="#join"
-            className="text-sm px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:opacity-95"
-          >
-            Join as Doctor
-          </a>
-        </div>
-      </nav>
-
+      <HomeNavBar />
       {/* HERO */}
       <header className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <motion.div
@@ -162,27 +107,6 @@ export default function ClinicLandingPage() {
           <div className="">
             <img src={heroImg} alt="Clinic hero" className="w-full" />
           </div>
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 3, repeat: Infinity }}
-            className="absolute -bottom-6 left-6 bg-white rounded-xl p-4 shadow-lg w-64"
-          >
-            <div className="text-sm font-semibold">Dr. Sara Khaled</div>
-            <div className="text-xs text-slate-500">
-              Pediatrics · Accepting new patients
-            </div>
-            <div className="mt-3 flex gap-2">
-              <a
-                href="#book"
-                className="text-sm px-3 py-2 bg-indigo-600 text-white rounded-md"
-              >
-                Book
-              </a>
-              <a href="#" className="text-sm px-3 py-2 border rounded-md">
-                Profile
-              </a>
-            </div>
-          </motion.div>
         </motion.div>
 
         {/* stats observer anchor */}
@@ -326,19 +250,19 @@ export default function ClinicLandingPage() {
                 The best care you can ask for
               </h3>
               <p className="text-slate-600 mt-1">One click away.</p>
-              <a
-                href="#book"
+              <Link
+                to="/patient/book"
                 className="inline-flex items-center gap-2 bg-accent-primary-main text-text-light px-5 py-3 rounded-lg mt-5"
               >
                 {/* <Calendar size={16} />  */}
                 Book Appointment
-              </a>
+              </Link>
             </div>
           </div>
         </section>
 
         {/* JOIN US - Doctors */}
-        <section id="join" className="bg-white rounded-2xl shadow p-8">
+        <section id="join" className="bg-white rounded-2xl shadow p-8 mb-16">
           <div className="md:flex md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-semibold">Join Our Team</h2>
@@ -388,54 +312,7 @@ export default function ClinicLandingPage() {
       </main>
 
       {/* FOOTER */}
-      <footer className="mt-16 bg-slate-900 text-white">
-        <div className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <div className="font-bold text-lg">Al Shifa Medical Center</div>
-            <div className="text-sm text-slate-300 mt-2">
-              123 Health St., Cairo, Egypt
-            </div>
-            <div className="text-sm text-slate-300 mt-2">
-              Mon — Sat: 8:00 — 20:00
-            </div>
-          </div>
-
-          <div>
-            <div className="font-semibold">Quick links</div>
-            <ul className="mt-3 text-sm text-slate-300 space-y-2">
-              <li>
-                <a href="#book" className="hover:underline">
-                  Book appointment
-                </a>
-              </li>
-              <li>
-                <a href="#join" className="hover:underline">
-                  Join as doctor
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Patient login
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <div className="font-semibold">Contact</div>
-            <div className="text-sm text-slate-300 mt-3">
-              Phone: +20 2 1234 5678
-            </div>
-            <div className="text-sm text-slate-300">
-              Email: info@alshifa.example
-            </div>
-          </div>
-        </div>
-        <div className="text-center text-xs text-slate-400 py-4">
-          © {new Date().getFullYear()} Al Shifa Medical Center — Powered by
-          Clinic.ly
-        </div>
-      </footer>
+      <MainFooter />
     </div>
   );
 }

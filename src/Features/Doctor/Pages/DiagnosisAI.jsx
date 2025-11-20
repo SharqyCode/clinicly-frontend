@@ -99,7 +99,7 @@ Confidence: <percentage>`,
   };
 
   return (
-    <div className="p-8 w-full min-h-screen">
+    <div className="w-full min-h-screen">
       <h1 className="text-4xl font-semibold mb-8">AI Tool </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

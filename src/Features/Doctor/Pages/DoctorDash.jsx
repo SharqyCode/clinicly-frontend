@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 
 import homeIcon from "../../../assets/homelogo.svg";
 import calender from "../../../assets/calender.svg";
@@ -153,7 +153,7 @@ export default function DoctorDash() {
                         rounded-lg text-sm font-medium transition-colors duration-200"
               style={{ width: "125px", height: "32px" }}
             >
-              <span>Launch Tool</span>
+              <Link to="assistant">Launch Tool</Link>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
@@ -183,45 +183,8 @@ export default function DoctorDash() {
       style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif' }}
     >
       <div className="layout-container flex h-full grow flex-col">
-        <div className="gap-1 px-6 flex flex-1 justify-center py-5">
+        <div className="gap-1  flex flex-1 justify-center">
           {/* SIDEBAR */}
-          <div className="layout-content-container flex flex-col w-80">
-            <div className="flex h-full min-h-[700px] flex-col justify-between bg-bg-light-primary p-4">
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col">
-                  <h1 className="text-text-dark text-base font-medium leading-normal">
-                    HealthFirst MD
-                  </h1>
-                  <p className="text-[#616f89] text-sm font-normal leading-normal">
-                    Dr. Emily Carter
-                  </p>
-                </div>
-
-                {/* Sidebar Menu */}
-                <div className="flex flex-col gap-2 mt-4">
-                  {sidebarItems.map((item) => (
-                    <button
-                      key={item.label}
-                      onClick={() => setActiveView(item.view)}
-                      className={`flex items-center gap-3 rounded-lg px-4 py-2 font-medium transition-all duration-200 text-left
-                        ${
-                          activeView === item.view
-                            ? "bg-bg-light-secondary text-black font-semibold"
-                            : "hover:bg-gray-200 text-[#111318] active:font-semibold"
-                        }`}
-                    >
-                      <img
-                        src={item.icon}
-                        alt={item.label}
-                        className="w-6 h-6 object-contain opacity-90"
-                      />
-                      <span>{item.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* MAIN CONTENT */}
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">

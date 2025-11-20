@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { signupPatient } from "../api/auth";
 import toast from "react-hot-toast";
+import { Link } from "react-router";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -63,16 +64,22 @@ const Signup = () => {
   const validate = () => {
     const newErrors = {};
 
-    if (formData.firstName.trim().length < 3) newErrors.firstName = "First name must be at least 3 characters.";
-    if (formData.lastName.trim().length < 3) newErrors.lastName = "Last name must be at least 3 characters.";
+    if (formData.firstName.trim().length < 3)
+      newErrors.firstName = "First name must be at least 3 characters.";
+    if (formData.lastName.trim().length < 3)
+      newErrors.lastName = "Last name must be at least 3 characters.";
     if (!formData.email.trim()) newErrors.email = "Email is required.";
     if (!formData.password.trim()) newErrors.password = "Password is required.";
-    if (!formData.dateOfBirth) newErrors.dateOfBirth = "Date of Birth is required.";
+    if (!formData.dateOfBirth)
+      newErrors.dateOfBirth = "Date of Birth is required.";
     if (!formData.gender) newErrors.gender = "Gender is required.";
     if (!formData.bloodType) newErrors.bloodType = "Blood type is required.";
-    if (!formData.emergencyName) newErrors.emergencyName = "Emergency name is required.";
-    if (!formData.emergencyRelation) newErrors.emergencyRelation = "Emergency relation is required.";
-    if (!formData.emergencyPhone.match(/^[0-9]{8,15}$/)) newErrors.emergencyPhone = "Emergency phone must be 8–15 digits.";
+    if (!formData.emergencyName)
+      newErrors.emergencyName = "Emergency name is required.";
+    if (!formData.emergencyRelation)
+      newErrors.emergencyRelation = "Emergency relation is required.";
+    if (!formData.emergencyPhone.match(/^[0-9]{8,15}$/))
+      newErrors.emergencyPhone = "Emergency phone must be 8–15 digits.";
     if (!formData.city) newErrors.city = "City is required.";
     if (!formData.area) newErrors.area = "Area is required.";
     if (!formData.street) newErrors.street = "Street is required.";
@@ -94,7 +101,9 @@ const Signup = () => {
       gender: formData.gender,
       bloodType: formData.bloodType,
       allergies: formData.allergies ? formData.allergies.split(",") : [],
-      chronicConditions: formData.chronicConditions ? formData.chronicConditions.split(",") : [],
+      chronicConditions: formData.chronicConditions
+        ? formData.chronicConditions.split(",")
+        : [],
       emergencyContact: {
         name: formData.emergencyName,
         relation: formData.emergencyRelation,
@@ -119,7 +128,6 @@ const Signup = () => {
       <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-lg">
         <h2 className="text-2xl font-bold mb-6 text-center">Patient Signup</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
-
           {/* Name */}
           <div className="flex gap-4">
             <div className="flex-1">
@@ -131,7 +139,9 @@ const Signup = () => {
                 onChange={handleChange}
                 className="input w-full"
               />
-              {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
+              {errors.firstName && (
+                <p className="text-red-500 text-sm">{errors.firstName}</p>
+              )}
             </div>
             <div className="flex-1">
               <label>Last Name*</label>
@@ -142,7 +152,9 @@ const Signup = () => {
                 onChange={handleChange}
                 className="input w-full"
               />
-              {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
+              {errors.lastName && (
+                <p className="text-red-500 text-sm">{errors.lastName}</p>
+              )}
             </div>
           </div>
 
@@ -156,7 +168,9 @@ const Signup = () => {
               onChange={handleChange}
               className="input w-full"
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email}</p>
+            )}
           </div>
 
           {/* Password */}
@@ -169,11 +183,12 @@ const Signup = () => {
               onChange={handleChange}
               className="input w-full"
             />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password}</p>
+            )}
           </div>
 
           {/* The rest is unchanged */}
-
 
           {/* Date of Birth */}
           <div>
@@ -185,7 +200,9 @@ const Signup = () => {
               onChange={handleChange}
               className="input w-full"
             />
-            {errors.dateOfBirth && <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>}
+            {errors.dateOfBirth && (
+              <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
+            )}
           </div>
 
           {/* Gender */}
@@ -202,7 +219,9 @@ const Signup = () => {
               <option value="female">Female</option>
               <option value="other">Other</option>
             </select>
-            {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
+            {errors.gender && (
+              <p className="text-red-500 text-sm">{errors.gender}</p>
+            )}
           </div>
 
           {/* Blood Type */}
@@ -224,7 +243,9 @@ const Signup = () => {
               <option value="O+">O+</option>
               <option value="O-">O-</option>
             </select>
-            {errors.bloodType && <p className="text-red-500 text-sm">{errors.bloodType}</p>}
+            {errors.bloodType && (
+              <p className="text-red-500 text-sm">{errors.bloodType}</p>
+            )}
           </div>
 
           {/* Emergency Contact */}
@@ -238,7 +259,9 @@ const Signup = () => {
               onChange={handleChange}
               className="input w-full"
             />
-            {errors.emergencyName && <p className="text-red-500 text-sm">{errors.emergencyName}</p>}
+            {errors.emergencyName && (
+              <p className="text-red-500 text-sm">{errors.emergencyName}</p>
+            )}
             <input
               type="text"
               name="emergencyRelation"
@@ -247,7 +270,9 @@ const Signup = () => {
               onChange={handleChange}
               className="input w-full"
             />
-            {errors.emergencyRelation && <p className="text-red-500 text-sm">{errors.emergencyRelation}</p>}
+            {errors.emergencyRelation && (
+              <p className="text-red-500 text-sm">{errors.emergencyRelation}</p>
+            )}
             <input
               type="text"
               name="emergencyPhone"
@@ -256,7 +281,9 @@ const Signup = () => {
               onChange={handleChange}
               className="input w-full"
             />
-            {errors.emergencyPhone && <p className="text-red-500 text-sm">{errors.emergencyPhone}</p>}
+            {errors.emergencyPhone && (
+              <p className="text-red-500 text-sm">{errors.emergencyPhone}</p>
+            )}
           </div>
 
           {/* Address */}
@@ -270,7 +297,9 @@ const Signup = () => {
               onChange={handleChange}
               className="input w-full"
             />
-            {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
+            {errors.city && (
+              <p className="text-red-500 text-sm">{errors.city}</p>
+            )}
             <input
               type="text"
               name="area"
@@ -279,7 +308,9 @@ const Signup = () => {
               onChange={handleChange}
               className="input w-full"
             />
-            {errors.area && <p className="text-red-500 text-sm">{errors.area}</p>}
+            {errors.area && (
+              <p className="text-red-500 text-sm">{errors.area}</p>
+            )}
             <input
               type="text"
               name="street"
@@ -288,7 +319,9 @@ const Signup = () => {
               onChange={handleChange}
               className="input w-full"
             />
-            {errors.street && <p className="text-red-500 text-sm">{errors.street}</p>}
+            {errors.street && (
+              <p className="text-red-500 text-sm">{errors.street}</p>
+            )}
           </div>
 
           {/* Optional Fields */}
@@ -342,17 +375,22 @@ const Signup = () => {
 
           {/* Google Signup/Login */}
           <div className="flex justify-center my-4">
-            <a
+            <Link
               href="http://localhost:5000/api/oauth/google-login"
               className="flex items-center justify-center w-full max-w-md border border-gray-300 rounded-lg py-2 px-4 hover:bg-gray-100 transition"
             >
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"
                 alt="Google Logo"
                 className="w-5 h-5 mr-2"
               />
               Continue with Google
-            </a>
+            </Link>
+          </div>
+          <div className="mt-4 text-center">
+            <Link to="/auth/login" className="text-center link ">
+              Already have an account? Login
+            </Link>
           </div>
         </form>
       </div>

@@ -2,438 +2,250 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryClient } from "../../../App/main";
 
-const AddPatientModal = ({ onClose, onSubmit, isSubmitting = false }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    gender: "Male",
-    phone: "",
-    email: "",
-    condition: "",
-    bloodType: "A+",
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (formData.name && formData.age && formData.phone && formData.email) {
-      onSubmit({
-        ...formData,
-        age: parseInt(formData.age),
-      });
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-900">Add New Patient</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name *
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Age *
-              </label>
-              <input
-                type="number"
-                name="age"
-                value={formData.age}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Gender
-              </label>
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone *
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="+1 (555) 123-4567"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email *
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Primary Condition
-            </label>
-            <input
-              type="text"
-              name="condition"
-              value={formData.condition}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="e.g., Hypertension, Diabetes"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Blood Type
-            </label>
-            <select
-              name="bloodType"
-              value={formData.bloodType}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="A+">A+</option>
-              <option value="A-">A-</option>
-              <option value="B+">B+</option>
-              <option value="B-">B-</option>
-              <option value="AB+">AB+</option>
-              <option value="AB-">AB-</option>
-              <option value="O+">O+</option>
-              <option value="O-">O-</option>
-            </select>
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {isSubmitting && (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              )}
-              {isSubmitting ? "Adding..." : "Add Patient"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
 // Static patient data - this would typically come from an API
-const initialPatientsData = [
-  {
-    id: 1,
-    name: "Liam Harper",
-    age: 34,
-    gender: "Male",
-    phone: "+1 (555) 123-4567",
-    email: "liam.harper@email.com",
-    lastVisit: "2024-11-10",
-    condition: "Hypertension",
-    status: "Active",
-    bloodType: "A+",
-    points: 850,
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-    nextAppointment: {
-      date: "2024-11-20",
-      time: "10:30 AM",
-      type: "Follow-up",
-      doctor: "Dr. Emily Carter",
-    },
-    appointmentHistory: [
-      {
-        id: 1,
-        date: "2024-11-10",
-        time: "9:00 AM",
-        type: "Check-up",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Blood pressure stable, continue current medication",
-      },
-      {
-        id: 2,
-        date: "2024-10-15",
-        time: "2:30 PM",
-        type: "Consultation",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Initial consultation for hypertension management",
-      },
-      {
-        id: 3,
-        date: "2024-09-20",
-        time: "11:00 AM",
-        type: "Lab Work",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Blood work and cholesterol screening",
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Olivia Bennett",
-    age: 28,
-    gender: "Female",
-    phone: "+1 (555) 234-5678",
-    email: "olivia.bennett@email.com",
-    lastVisit: "2024-11-12",
-    condition: "Diabetes Type 2",
-    status: "Active",
-    bloodType: "O-",
-    points: 1250,
-    avatar:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
-    nextAppointment: {
-      date: "2024-11-18",
-      time: "2:00 PM",
-      type: "Diabetes Management",
-      doctor: "Dr. Emily Carter",
-    },
-    appointmentHistory: [
-      {
-        id: 1,
-        date: "2024-11-12",
-        time: "1:30 PM",
-        type: "Follow-up",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Blood sugar levels improving, adjust medication dosage",
-      },
-      {
-        id: 2,
-        date: "2024-10-28",
-        time: "10:00 AM",
-        type: "Consultation",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Diabetes education and lifestyle counseling",
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "Noah Carter",
-    age: 45,
-    gender: "Male",
-    phone: "+1 (555) 345-6789",
-    email: "noah.carter@email.com",
-    lastVisit: "2024-11-08",
-    condition: "Asthma",
-    status: "Active",
-    bloodType: "B+",
-    points: 620,
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-    nextAppointment: {
-      date: "2024-11-25",
-      time: "3:15 PM",
-      type: "Pulmonary Function Test",
-      doctor: "Dr. Emily Carter",
-    },
-    appointmentHistory: [
-      {
-        id: 1,
-        date: "2024-11-08",
-        time: "3:00 PM",
-        type: "Check-up",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Asthma well controlled, continue current inhaler regimen",
-      },
-      {
-        id: 2,
-        date: "2024-09-15",
-        time: "11:30 AM",
-        type: "Emergency Visit",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Acute asthma exacerbation, treated with nebulizer",
-      },
-    ],
-  },
-  {
-    id: 4,
-    name: "Emma Wilson",
-    age: 32,
-    gender: "Female",
-    phone: "+1 (555) 456-7890",
-    email: "emma.wilson@email.com",
-    lastVisit: "2024-11-14",
-    condition: "Migraine",
-    status: "Active",
-    bloodType: "AB+",
-    points: 980,
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-    nextAppointment: {
-      date: "2024-11-22",
-      time: "9:45 AM",
-      type: "Neurology Consultation",
-      doctor: "Dr. Emily Carter",
-    },
-    appointmentHistory: [
-      {
-        id: 1,
-        date: "2024-11-14",
-        time: "9:30 AM",
-        type: "Follow-up",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Migraine frequency reduced, continue preventive medication",
-      },
-    ],
-  },
-  {
-    id: 5,
-    name: "James Rodriguez",
-    age: 52,
-    gender: "Male",
-    phone: "+1 (555) 567-8901",
-    email: "james.rodriguez@email.com",
-    lastVisit: "2024-11-05",
-    condition: "Arthritis",
-    status: "Inactive",
-    bloodType: "O+",
-    points: 450,
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
-    nextAppointment: null,
-    appointmentHistory: [
-      {
-        id: 1,
-        date: "2024-11-05",
-        time: "4:00 PM",
-        type: "Check-up",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Joint pain assessment, prescribed anti-inflammatory medication",
-      },
-      {
-        id: 2,
-        date: "2024-08-15",
-        time: "2:15 PM",
-        type: "Physical Therapy Consultation",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Referred to physical therapy for joint mobility",
-      },
-    ],
-  },
-  {
-    id: 6,
-    name: "Sophia Martinez",
-    age: 29,
-    gender: "Female",
-    phone: "+1 (555) 678-9012",
-    email: "sophia.martinez@email.com",
-    lastVisit: "2024-11-13",
-    condition: "Anxiety",
-    status: "Active",
-    bloodType: "A-",
-    points: 1100,
-    avatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
-    nextAppointment: {
-      date: "2024-11-19",
-      time: "1:00 PM",
-      type: "Therapy Session",
-      doctor: "Dr. Emily Carter",
-    },
-    appointmentHistory: [
-      {
-        id: 1,
-        date: "2024-11-13",
-        time: "1:00 PM",
-        type: "Mental Health Check-up",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Anxiety levels improving with medication and therapy",
-      },
-      {
-        id: 2,
-        date: "2024-10-30",
-        time: "10:30 AM",
-        type: "Initial Assessment",
-        doctor: "Dr. Emily Carter",
-        status: "Completed",
-        notes: "Anxiety disorder diagnosis, started on SSRI medication",
-      },
-    ],
-  },
-];
+// const initialPatientsData = [
+//   {
+//     id: 1,
+//     name: "Liam Harper",
+//     age: 34,
+//     gender: "Male",
+//     phone: "+1 (555) 123-4567",
+//     email: "liam.harper@email.com",
+//     lastVisit: "2024-11-10",
+//     condition: "Hypertension",
+//     status: "Active",
+//     bloodType: "A+",
+//     points: 850,
+//     avatar:
+//       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+//     nextAppointment: {
+//       date: "2024-11-20",
+//       time: "10:30 AM",
+//       type: "Follow-up",
+//       doctor: "Dr. Emily Carter",
+//     },
+//     appointmentHistory: [
+//       {
+//         id: 1,
+//         date: "2024-11-10",
+//         time: "9:00 AM",
+//         type: "Check-up",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Blood pressure stable, continue current medication",
+//       },
+//       {
+//         id: 2,
+//         date: "2024-10-15",
+//         time: "2:30 PM",
+//         type: "Consultation",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Initial consultation for hypertension management",
+//       },
+//       {
+//         id: 3,
+//         date: "2024-09-20",
+//         time: "11:00 AM",
+//         type: "Lab Work",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Blood work and cholesterol screening",
+//       },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     name: "Olivia Bennett",
+//     age: 28,
+//     gender: "Female",
+//     phone: "+1 (555) 234-5678",
+//     email: "olivia.bennett@email.com",
+//     lastVisit: "2024-11-12",
+//     condition: "Diabetes Type 2",
+//     status: "Active",
+//     bloodType: "O-",
+//     points: 1250,
+//     avatar:
+//       "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
+//     nextAppointment: {
+//       date: "2024-11-18",
+//       time: "2:00 PM",
+//       type: "Diabetes Management",
+//       doctor: "Dr. Emily Carter",
+//     },
+//     appointmentHistory: [
+//       {
+//         id: 1,
+//         date: "2024-11-12",
+//         time: "1:30 PM",
+//         type: "Follow-up",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Blood sugar levels improving, adjust medication dosage",
+//       },
+//       {
+//         id: 2,
+//         date: "2024-10-28",
+//         time: "10:00 AM",
+//         type: "Consultation",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Diabetes education and lifestyle counseling",
+//       },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     name: "Noah Carter",
+//     age: 45,
+//     gender: "Male",
+//     phone: "+1 (555) 345-6789",
+//     email: "noah.carter@email.com",
+//     lastVisit: "2024-11-08",
+//     condition: "Asthma",
+//     status: "Active",
+//     bloodType: "B+",
+//     points: 620,
+//     avatar:
+//       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+//     nextAppointment: {
+//       date: "2024-11-25",
+//       time: "3:15 PM",
+//       type: "Pulmonary Function Test",
+//       doctor: "Dr. Emily Carter",
+//     },
+//     appointmentHistory: [
+//       {
+//         id: 1,
+//         date: "2024-11-08",
+//         time: "3:00 PM",
+//         type: "Check-up",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Asthma well controlled, continue current inhaler regimen",
+//       },
+//       {
+//         id: 2,
+//         date: "2024-09-15",
+//         time: "11:30 AM",
+//         type: "Emergency Visit",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Acute asthma exacerbation, treated with nebulizer",
+//       },
+//     ],
+//   },
+//   {
+//     id: 4,
+//     name: "Emma Wilson",
+//     age: 32,
+//     gender: "Female",
+//     phone: "+1 (555) 456-7890",
+//     email: "emma.wilson@email.com",
+//     lastVisit: "2024-11-14",
+//     condition: "Migraine",
+//     status: "Active",
+//     bloodType: "AB+",
+//     points: 980,
+//     avatar:
+//       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+//     nextAppointment: {
+//       date: "2024-11-22",
+//       time: "9:45 AM",
+//       type: "Neurology Consultation",
+//       doctor: "Dr. Emily Carter",
+//     },
+//     appointmentHistory: [
+//       {
+//         id: 1,
+//         date: "2024-11-14",
+//         time: "9:30 AM",
+//         type: "Follow-up",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Migraine frequency reduced, continue preventive medication",
+//       },
+//     ],
+//   },
+//   {
+//     id: 5,
+//     name: "James Rodriguez",
+//     age: 52,
+//     gender: "Male",
+//     phone: "+1 (555) 567-8901",
+//     email: "james.rodriguez@email.com",
+//     lastVisit: "2024-11-05",
+//     condition: "Arthritis",
+//     status: "Inactive",
+//     bloodType: "O+",
+//     points: 450,
+//     avatar:
+//       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+//     nextAppointment: null,
+//     appointmentHistory: [
+//       {
+//         id: 1,
+//         date: "2024-11-05",
+//         time: "4:00 PM",
+//         type: "Check-up",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Joint pain assessment, prescribed anti-inflammatory medication",
+//       },
+//       {
+//         id: 2,
+//         date: "2024-08-15",
+//         time: "2:15 PM",
+//         type: "Physical Therapy Consultation",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Referred to physical therapy for joint mobility",
+//       },
+//     ],
+//   },
+//   {
+//     id: 6,
+//     name: "Sophia Martinez",
+//     age: 29,
+//     gender: "Female",
+//     phone: "+1 (555) 678-9012",
+//     email: "sophia.martinez@email.com",
+//     lastVisit: "2024-11-13",
+//     condition: "Anxiety",
+//     status: "Active",
+//     bloodType: "A-",
+//     points: 1100,
+//     avatar:
+//       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
+//     nextAppointment: {
+//       date: "2024-11-19",
+//       time: "1:00 PM",
+//       type: "Therapy Session",
+//       doctor: "Dr. Emily Carter",
+//     },
+//     appointmentHistory: [
+//       {
+//         id: 1,
+//         date: "2024-11-13",
+//         time: "1:00 PM",
+//         type: "Mental Health Check-up",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Anxiety levels improving with medication and therapy",
+//       },
+//       {
+//         id: 2,
+//         date: "2024-10-30",
+//         time: "10:30 AM",
+//         type: "Initial Assessment",
+//         doctor: "Dr. Emily Carter",
+//         status: "Completed",
+//         notes: "Anxiety disorder diagnosis, started on SSRI medication",
+//       },
+//     ],
+//   },
+// ];
 
 // Custom hooks for TanStack Query
 const usePatientsQuery = () => {
@@ -442,7 +254,7 @@ const usePatientsQuery = () => {
     queryFn: async () => {
       // Simulate API call - replace with actual API endpoint
       await new Promise((resolve) => setTimeout(resolve, 500));
-      return initialPatientsData;
+      return [];
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     cacheTime: 10 * 60 * 1000, // 10 minutes

@@ -373,31 +373,6 @@ const AppointmentsList = () => {
                     {appointment.status}
                   </span>
 
-                  {appointment.status === "Scheduled" && (
-                    <div className="flex gap-1">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleStatusUpdate(appointment.id, "In Progress");
-                        }}
-                        className="px-2 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700 transition-colors"
-                        disabled={updateAppointmentMutation.isPending}
-                      >
-                        Start
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleStatusUpdate(appointment.id, "Cancelled");
-                        }}
-                        className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
-                        disabled={updateAppointmentMutation.isPending}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  )}
-
                   {appointment.status === "In Progress" && (
                     <button
                       onClick={(e) => {

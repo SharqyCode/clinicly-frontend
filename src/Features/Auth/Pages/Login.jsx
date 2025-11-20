@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { loginPatient } from "../api/auth"; // Your API function
 import toast from "react-hot-toast";
+import { Link } from "react-router";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -71,7 +72,9 @@ const Login = () => {
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Email */}
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Email</label>
+            <label className="block mb-1 font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -82,12 +85,15 @@ const Login = () => {
               required
               disabled={googlePrefill} // disable if prefilled from Google
             />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
-
           {/* Password */}
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Password</label>
+            <label className="block mb-1 font-medium text-gray-700">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -97,9 +103,10 @@ const Login = () => {
               className="input w-full"
               required
             />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            )}
           </div>
-
           {/* Submit Button */}
           <button
             type="submit"
@@ -107,7 +114,6 @@ const Login = () => {
           >
             {mutation.isLoading ? "Logging in..." : "Login"}
           </button>
-
           {/* Google login */}
           <div className="flex justify-center my-4">
             <a
@@ -115,12 +121,17 @@ const Login = () => {
               className="flex items-center justify-center w-full max-w-md border border-gray-300 rounded-lg py-2 px-4 hover:bg-gray-100 transition"
             >
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"
                 alt="Google Logo"
                 className="w-5 h-5 mr-2"
               />
               Continue with Google
             </a>
+          </div>
+          <div className="mt-4 text-center">
+            <Link to="/auth/signup" className="text-center link ">
+              Not registered yet? Sign up
+            </Link>
           </div>
         </form>
       </div>

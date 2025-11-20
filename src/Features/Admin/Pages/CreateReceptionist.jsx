@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { createReceptionist } from "../../../Api/Services/ReceptionistService";
-
+import { createReceptionist } from "../../../Api/Services/receptionistService";
 
 export default function CreateReceptionist() {
   const {
@@ -17,14 +16,16 @@ export default function CreateReceptionist() {
   const [uploadMessage, setUploadMessage] = useState("");
 
   const mutation = useMutation({
-  mutationFn: createReceptionist,
-  onSuccess: () => {
-    setMessage("Receptionist created successfully!");
-  },
-  onError: (error) => {
-    setMessage(error.response?.data?.message || "Failed to create receptionist.");
-  },
-});
+    mutationFn: createReceptionist,
+    onSuccess: () => {
+      setMessage("Receptionist created successfully!");
+    },
+    onError: (error) => {
+      setMessage(
+        error.response?.data?.message || "Failed to create receptionist."
+      );
+    },
+  });
 
   const onSubmit = (data) => {
     setMessage("");
@@ -125,9 +126,7 @@ export default function CreateReceptionist() {
               {...register("email", { required: true })}
               className="w-full border p-2 rounded"
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm">Required</p>
-            )}
+            {errors.email && <p className="text-red-500 text-sm">Required</p>}
           </div>
 
           {/* PHONE */}
@@ -138,9 +137,7 @@ export default function CreateReceptionist() {
               {...register("phone", { required: true })}
               className="w-full border p-2 rounded"
             />
-            {errors.phone && (
-              <p className="text-red-500 text-sm">Required</p>
-            )}
+            {errors.phone && <p className="text-red-500 text-sm">Required</p>}
           </div>
 
           {/* PASSWORD */}

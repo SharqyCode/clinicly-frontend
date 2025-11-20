@@ -9,8 +9,7 @@ export default function DoctorCard({ doctor, activeDoctor }) {
     <div
       className={clsx(
         `flex flex-col-reverse items-center text-center justify-between border  p-4 rounded-lg my-6 cursor-pointer`,
-
-        `hover:-translate-y-1.5 transition-transform  duration-300`,
+        `hover:-translate-y-1.5 transition-transform duration-300`,
         `md:flex-row md:text-start`,
         isActiveDoctor(doctor, activeDoctor) && "bg-accent-success-main/20",
         !isActiveDoctor(doctor, activeDoctor) && "border-gray-300"
