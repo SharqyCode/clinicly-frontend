@@ -2,71 +2,81 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { Snackbar, Alert } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
 import { getUserById } from "../Features/Auth/api/auth";
+import { getSuperUser } from "../Api/Services/userService";
 import { useNavigate } from "react-router";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [superUser, setSuperUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "info",
   });
-  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   const showSnackbar = (message, severity = "info") => {
     setSnackbar({ open: true, message, severity });
   };
 
-  const handleCloseSnackbar = () => {
+  const handleCloseSnackbar = () =>
     setSnackbar((prev) => ({ ...prev, open: false }));
-  };
 
-  const login = (data, signup = false) => {
-    setUser(data.user);
+  // ----------------------------
+  // LOGIN
+  // ----------------------------
+  const login = async (data, signup = false) => {
+    const baseUser = data.user;
+    setUser(baseUser);
+
     localStorage.setItem("accessToken", data.accessToken);
+
+    // always use _id, not id
+    console.log(baseUser);
+    const su = await getSuperUser(baseUser._id || baseUser.id);
+    console.log(su);
+    setSuperUser(su);
 
     showSnackbar(!signup ? "Welcome Back!" : "Welcome Aboard!", "success");
   };
 
+  // ----------------------------
+  // LOGOUT
+  // ----------------------------
   const logout = () => {
     localStorage.removeItem("accessToken");
     setUser(null);
+    setSuperUser(null);
     navigate("/auth/login");
     showSnackbar("Farewell!", "info");
   };
 
-  // Load current user on refresh
+  // ----------------------------
+  // AUTO LOGIN ON REFRESH
+  // ----------------------------
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
     const loadUser = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-      let decoded = null;
       try {
-        decoded = jwtDecode(token);
-      } catch (err) {
-        console.error("Invalid token:", err);
-        localStorage.removeItem("accessToken"); // FIXED
-        setLoading(false);
-        return;
-      }
-
-      try {
+        const decoded = jwtDecode(token);
         const res = await getUserById(decoded.id);
+        const baseUser = res.user || res;
+        setUser(baseUser);
 
-        // API likely returns { user: {...} }
-        const fetchedUser = res.user || res;
-
-        setUser(fetchedUser);
+        const su = await getSuperUser(baseUser._id || baseUser.id);
+        setSuperUser(su);
       } catch (err) {
-        console.error("Failed to load user:", err);
+        console.error("Auto-login failed:", err);
         localStorage.removeItem("accessToken");
       } finally {
         setLoading(false);
@@ -78,7 +88,14 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, showSnackbar, loading }}
+      value={{
+        user,
+        superUser,
+        loading,
+        login,
+        logout,
+        showSnackbar,
+      }}
     >
       {children}
 

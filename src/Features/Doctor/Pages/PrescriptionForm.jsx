@@ -5,6 +5,7 @@ import {
   updatePrescription,
   getPrescriptionById,
 } from "../../../Api/Services/prescriptions.js";
+import { useAuth } from "../../../Context/AuthContext.jsx";
 
 const PrescriptionForm = ({
   prescriptionId = null,
@@ -30,6 +31,9 @@ const PrescriptionForm = ({
     ],
     additionalNotes: "",
   });
+
+  const { superUser } = useAuth();
+  console.log(superUser);
 
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -239,10 +243,11 @@ const PrescriptionForm = ({
               <input
                 type="text"
                 name="doctor"
-                value={formData.doctor}
-                onChange={(e) =>
-                  setFormData({ ...formData, doctor: e.target.value })
-                }
+                value={superUser?._id}
+                // onChange={(e) =>
+                //   setFormData({ ...formData, doctor: e.target.value })
+                // }
+                disabled
                 placeholder="Enter doctor ID"
                 required
                 readOnly={isEditMode}

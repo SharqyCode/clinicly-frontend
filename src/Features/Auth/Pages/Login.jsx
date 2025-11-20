@@ -41,7 +41,9 @@ const Login = () => {
       console.log(data);
       login(data);
       toast.success("Login successful!");
-      navigate("/patient");
+      if (data.user.role === "patient") navigate("/patient");
+      if (data.user.role === "doctor") navigate("/doctor");
+      if (data.user.role === "receptionist") navigate("/receptionist");
       // window.location.href = "/"; // redirect to dashboard
     },
     onError: (error) => {
@@ -49,6 +51,7 @@ const Login = () => {
     },
   });
 
+  console.log(mutation.data);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });

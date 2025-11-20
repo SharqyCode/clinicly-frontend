@@ -1,8 +1,11 @@
-// import api from "../axiosInstance";
+import axios from "axios";
+import api from "../axiosInstance";
 
-
-// export const loginUser = async (payload) => {
-//     const { data } = await api.post("/auth/login", payload);
-//     console.log("login:", data);
-//     return data;
-// };
+export const getSuperUser = async (userId) => {
+    const { data } = await axios.get(`http://localhost:5000/api/auth/${userId}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        }
+    });
+    return data;
+};

@@ -12,9 +12,11 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { useAuth } from "../../../../Context/AuthContext";
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
   return (
     <>
       {isOpen && (
@@ -104,7 +106,9 @@ export default function SideBar() {
         </nav>
         {isOpen && (
           <div>
-            <button className="btn btn-outline mt-10">Logout</button>
+            <button onClick={logout} className="btn btn-outline mt-10">
+              Logout
+            </button>
           </div>
         )}
       </aside>
