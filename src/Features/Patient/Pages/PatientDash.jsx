@@ -1,6 +1,7 @@
-import React from "react";
-import { NavLink } from "react-router";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import { usePatients } from "../../hooks/usePatients";
+import PatientPrescriptions from "./PatientPrescriptions";
 import calender from "../../../assets/calender.svg";
 import record from "../../../assets/record.svg";
 import mail from "../../../assets/mail.svg";
