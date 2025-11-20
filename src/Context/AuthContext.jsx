@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { Snackbar, Alert } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
-import { getUserById } from "../api/usersApi";
+import { getUserById } from "../Features/Auth/api/auth";
+import { useNavigate } from "react-router";
 
 const AuthContext = createContext();
 
@@ -13,60 +14,74 @@ export const AuthProvider = ({ children }) => {
     severity: "info",
   });
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const showSnackbar = (message, severity = "info") => {
     setSnackbar({ open: true, message, severity });
   };
 
   const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
-  const login = (userData, signup = false) => {
-    setUser(userData);
-    // User is already registered
-    if (!signup) showSnackbar("Welcome Back, Soldier!", "success");
-    // User is a first-timer
-    else showSnackbar("Welcome Aboard, Soldier!", "success");
+  const login = (data, signup = false) => {
+    setUser(data.user);
+    localStorage.setItem("accessToken", data.accessToken);
+
+    showSnackbar(!signup ? "Welcome Back!" : "Welcome Aboard!", "success");
   };
 
-  const logout = (navigate) => {
-    localStorage.removeItem("token");
+  const logout = () => {
+    localStorage.removeItem("accessToken");
     setUser(null);
     navigate("/auth/login");
-    showSnackbar("Farewell, Soldier!", "info");
+    showSnackbar("Farewell!", "info");
   };
 
-  // Optional: verify token on app load
+  // Load current user on refresh
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
 
-    const getUser = async () => {
-      if (token) {
-        try {
-          const data = await getUserById(await jwtDecode(token).id);
-          setUser(data);
-          console.log(`context setUser`, data);
-        } catch (error) {
-          // Handle token invalid or API error if needed
-          console.error("Token validation error:", error);
-          localStorage.removeItem("token");
-        } finally {
-          // Set loading to false once the check is complete (success or failure)
-          setLoading(false);
-        }
-      } else {
-        // If no token, also stop loading immediately
+    const loadUser = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      let decoded = null;
+      try {
+        decoded = jwtDecode(token);
+      } catch (err) {
+        console.error("Invalid token:", err);
+        localStorage.removeItem("accessToken"); // FIXED
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await getUserById(decoded.id);
+
+        // API likely returns { user: {...} }
+        const fetchedUser = res.user || res;
+
+        setUser(fetchedUser);
+      } catch (err) {
+        console.error("Failed to load user:", err);
+        localStorage.removeItem("accessToken");
+      } finally {
         setLoading(false);
       }
     };
-    getUser();
+
+    loadUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, showSnackbar }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, showSnackbar, loading }}
+    >
       {children}
-      {/* Global Snackbar */}
+
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

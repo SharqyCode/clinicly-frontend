@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { loginPatient } from "../api/auth"; // Your API function
 import toast from "react-hot-toast";
-import { Link } from "react-router";
+import { Link, redirect, useNavigate } from "react-router";
+import { useAuth } from "../../../Context/AuthContext";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [googlePrefill, setGooglePrefill] = useState(false); // flag to disable prefilled fields
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   // Check for Google redirect params
   useEffect(() => {
@@ -34,9 +37,12 @@ const Login = () => {
   const mutation = useMutation({
     mutationFn: loginPatient,
     onSuccess: (data) => {
-      localStorage.setItem("accessToken", data.accessToken);
+      // localStorage.setItem("accessToken", data.accessToken);
+      console.log(data);
+      login(data);
       toast.success("Login successful!");
-      window.location.href = "/"; // redirect to dashboard
+      navigate("/patient");
+      // window.location.href = "/"; // redirect to dashboard
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Login failed.");

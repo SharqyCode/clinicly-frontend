@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5002/api";
+const API_URL = "http://localhost:5000/api";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -68,6 +68,22 @@ export const getDoctorAppointments = async (doctorId) => {
   }
   return data?.data || data || [];
 };
+
+// Get doctor's appointments
+// export const getPatientAppointments = async (patientId) => {
+//   const response = await fetch(`${API_URL}/appointments/patient/${patientId}`, {
+//     method: "GET",
+//     headers: getAuthHeaders(),
+//   });
+
+//   const data = await response.json();
+//   if (!response.ok) {
+//     throw new Error(
+//       data?.message || data || "Failed to fetch doctor appointments"
+//     );
+//   }
+//   return data?.data || data || [];
+// };
 
 // Create new appointment
 export const createAppointment = async (appointmentData) => {

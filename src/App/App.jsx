@@ -4,12 +4,14 @@ import ReceptionistRoutes from "../Features/Receptionist/Routes/ReceptionistRout
 import AdminRoutes from "../Features/Admin/Routes/AdminRoutes";
 import ClinicLandingPage from "../Features/Home/Pages/ClinicLandingPage";
 import AuthRoutes from "../Features/Auth/Routes/AuthRoutes";
+import PatientRoutes from "../Features/Patient/Routes/PatientRoutes";
 
 function App() {
   return (
     <Routes>
       <Route path="/*" element={<ClinicLandingPage />} />
       <Route path="/doctor/*" element={<DoctorRoutes />} />
+      <Route path="/patient/*" element={<PatientRoutes />} />
       <Route path="/receptionist/*" element={<ReceptionistRoutes />} />
       <Route path="/admin/*" element={<AdminRoutes />} />
       <Route path="/auth/*" element={<AuthRoutes />} />

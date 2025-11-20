@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { usePatients } from "../../hooks/usePatients";
 import PatientPrescriptions from "./PatientPrescriptions";
 import calender from "../../../assets/calender.svg";
@@ -11,15 +11,6 @@ import profile from "../../../assets/profile.svg";
 
 export default function PatientDash() {
   const { data, isLoading, isError, error } = usePatients();
-
-  // Sidebar items
-  const sidebarItems = [
-    { label: "Dashboard", icon: homelogo, path: "/dashboard" },
-    { label: "My Appointments", icon: calender, path: "/my-appointments" },
-    { label: "Medical Records", icon: record, path: "/medical-records" },
-    { label: "Messages", icon: msg, path: "/messages" },
-    { label: "Profile", icon: profile, path: "/profile" },
-  ];
 
   // Loading or error states for patients
   if (isLoading)
@@ -44,50 +35,6 @@ export default function PatientDash() {
       <div className="layout-container flex h-full grow flex-col">
         <div className="gap-1 px-6 flex flex-1 justify-center py-5">
           {/* SIDEBAR */}
-          <div className="layout-content-container flex flex-col w-80">
-            <div className="flex h-full min-h-[700px] flex-col justify-between bg-bg-light-primary p-4">
-              <div className="flex flex-col gap-4">
-                {/* Profile */}
-                <div className="flex items-center gap-3">
-                  <div
-                    className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-                    style={{
-                      backgroundImage:
-                        'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBWB2Y4rFUjXQHFFX6FnQhGDl2n8AOyuqcSXNKKcXVk7bcUWIW2jAIL5g7yWGObBeXhDP7p457vR8BCL1hTKelgzXmPBIVITI8SsI1f3sAQ23PItwcZIm-vE8scR396pmoqyrJ7aHFPlzYlTcH52J8XVtHgCJTz8VHSc6ukGXGh-WoZVDA3XHnoL3xHjV8SIweNsnedHWxA_UmmqW8AuQNZxXlbxqSczJ_nnjXv4owSmq0PLx8ufsN7N-oK8BiXoBG98aDSae2l1uo")',
-                    }}
-                  ></div>
-                  <h1 className="text-text-dark text-base font-medium leading-normal">
-                    Sophia Clark
-                  </h1>
-                </div>
-
-                {/* Sidebar Menu */}
-                <div className="flex flex-col gap-2 mt-4">
-                  {sidebarItems.map((item) => (
-                    <NavLink
-                      key={item.label}
-                      to={item.path}
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 rounded-lg px-4 py-2 font-medium transition-all duration-200
-                        ${
-                          isActive
-                            ? "bg-bg-light-secondary text-text-dark font-semibold"
-                            : "bg-bg-light-primary text-text-dark hover:bg-bg-light-secondary"
-                        }`
-                      }
-                    >
-                      <img
-                        src={item.icon}
-                        alt={item.label}
-                        className="w-6 h-6 object-contain opacity-90"
-                      />
-                      <span>{item.label}</span>
-                    </NavLink>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* MAIN CONTENT */}
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
@@ -100,9 +47,12 @@ export default function PatientDash() {
 
             {/* Book Button */}
             <div className="flex px-4 py-3 justify-start">
-              <button className="bg-accent-primary-main hover:bg-accent-primary-dark text-text-light rounded-lg px-6 py-2 font-bold transition-colors duration-200">
+              <Link
+                to="book-appointment"
+                className="bg-accent-primary-main hover:bg-accent-primary-dark text-text-light rounded-lg px-6 py-2 font-bold transition-colors duration-200"
+              >
                 Book New Appointment
-              </button>
+              </Link>
             </div>
 
             {/* Patient List Section */}

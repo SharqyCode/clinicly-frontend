@@ -59,6 +59,20 @@ export const useDoctorAppointments = (doctorId) => {
   });
 };
 
+// Hook to get doctor's appointments
+// export const usePatientAppointments = (patientId) => {
+//   return useQuery({
+//     queryKey: ["appointments", "patient", patientId],
+//     queryFn: () => getPatientAppointments(patientId),
+//     enabled: !!patientId, // Only run if doctorId exists
+//     staleTime: 2 * 60 * 1000, // 2 minutes
+//     retry: (failureCount, error) => {
+//       if (error?.message?.includes("404")) return false;
+//       return failureCount < 2;
+//     },
+//   });
+// };
+
 // Hook to get single appointment by ID
 export const useAppointment = (id) => {
   return useQuery({

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
-import React, { useState } from "react";
 import { Link, NavLink } from "react-router";
 
 import homeIcon from "../../../assets/homelogo.svg";
