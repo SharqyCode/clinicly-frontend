@@ -130,7 +130,6 @@ const Signup = () => {
                 value={formData.firstName}
                 onChange={handleChange}
                 className="input w-full"
-                disabled={!!formData.firstName} // Disable if prefilled
               />
               {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
             </div>
@@ -142,7 +141,6 @@ const Signup = () => {
                 value={formData.lastName}
                 onChange={handleChange}
                 className="input w-full"
-                disabled={!!formData.lastName} // Disable if prefilled
               />
               {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
             </div>
@@ -157,7 +155,6 @@ const Signup = () => {
               value={formData.email}
               onChange={handleChange}
               className="input w-full"
-              disabled={!!formData.email} // Disable if prefilled
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
@@ -174,6 +171,9 @@ const Signup = () => {
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
+
+          {/* The rest is unchanged */}
+
 
           {/* Date of Birth */}
           <div>

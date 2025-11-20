@@ -1,11 +1,11 @@
 import TextField from "@mui/material/TextField";
 import React, { useState, useMemo } from "react";
 import FormTitle from "./FormTitle";
-import { useQuery } from "@tanstack/react-query";
-import { getAllPatients } from "../../../Api/Services/patientService";
-import clsx from "clsx";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { getAllPatients } from "../../../Api/Services/UserMangementService";
 import PatientList from "./PatientList";
-import { set } from "react-hook-form";
+import PatientFormModal from "./PatientSearch/PatientFormModal";
+import { createPatient } from "../Api/Services/patientService";
 
 export default function PatientSearch({
   setActivePatient,
@@ -22,7 +22,9 @@ export default function PatientSearch({
   const [name, setName] = useState(() =>
     role === "patient" ? user.fullName : ""
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const queryClient = new QueryClient();
   const {
     data: patients,
     isLoading,
@@ -31,11 +33,22 @@ export default function PatientSearch({
   } = useQuery({
     queryKey: ["patients"],
     queryFn: getAllPatients,
+    staleTime: 1000 * 60,
   });
 
-  // console.log(activePatient);
+  const createMutation = useMutation({
+    mutationFn: createPatient,
+    onSuccess: (data) => {
+      const { data: patient } = data;
+      setIsModalOpen(false);
+      setActivePatient(patient); // auto-select after creation
+      setName(patient.fullName);
+      setEmail(patient.userId.email);
+      setPhone(patient.userId.phone);
+      queryClient.invalidateQueries(["patients"]);
+    },
+  });
 
-  // console.log(patients);
   // Filter patients based on any filled field
   const filteredPatients = useMemo(() => {
     if (!patients?.data) return [];
@@ -47,7 +60,8 @@ export default function PatientSearch({
       const matchesName = name
         ? p.fullName?.toLowerCase().includes(name.toLowerCase())
         : true;
-      return matchesPhone && matchesEmail && matchesName;
+      const matchActive = p.userId.isActive == true;
+      return matchesPhone && matchesEmail && matchesName && matchActive;
     });
   }, [patients, phone, email, name]);
 
@@ -97,13 +111,34 @@ export default function PatientSearch({
             Reset
           </button>
         </div>
-        <PatientList
-          filteredPatients={filteredPatients}
-          activePatient={activePatient}
-          setActivePatient={setActivePatient}
-          setName={setName}
-          setEmail={setEmail}
-          setPhone={setPhone}
+        {filteredPatients.length > 0 ? (
+          <PatientList
+            filteredPatients={filteredPatients}
+            activePatient={activePatient}
+            setActivePatient={setActivePatient}
+            setName={setName}
+            setEmail={setEmail}
+            setPhone={setPhone}
+          />
+        ) : (
+          <div className="mt-6 flex flex-col items-center gap-3 border-t pt-4">
+            <p className="opacity-70">No matching patients found.</p>
+
+            {/* DaisyUI Button */}
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="btn btn-primary text-white"
+            >
+              + Create New Patient
+            </button>
+          </div>
+        )}
+        {/* Modal */}
+        <PatientFormModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={(data) => createMutation.mutate(data)}
+          isLoading={createMutation.isPending}
         />
       </div>
     </div>

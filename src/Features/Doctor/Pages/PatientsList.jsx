@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryClient } from "../../../App/main";
 
 const AddPatientModal = ({ onClose, onSubmit, isSubmitting = false }) => {
   const [formData, setFormData] = useState({
@@ -449,8 +450,6 @@ const usePatientsQuery = () => {
 };
 
 const useAddPatientMutation = () => {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (newPatientData) => {
       // Simulate API call - replace with actual API endpoint

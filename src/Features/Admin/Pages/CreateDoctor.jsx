@@ -24,13 +24,21 @@ const universityOptions = [
   { value: "Port Said University", label: "Port Said University" },
   { value: "Sohag University", label: "Sohag University" },
   { value: "Damietta University", label: "Damietta University" },
-  { value: "American University in Cairo (AUC)", label: "American University in Cairo (AUC)" },
+  {
+    value: "American University in Cairo (AUC)",
+    label: "American University in Cairo (AUC)",
+  },
 ];
 
 export default function CreateDoctor() {
-  const { register, handleSubmit,setValue, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
   const [message, setMessage] = useState("");
-    const [imageURL, setImageURL] = useState(""); // store uploaded image
+  const [imageURL, setImageURL] = useState(""); // store uploaded image
   const [uploading, setUploading] = useState(false); // show uploading state
   const [uploadMessage, setUploadMessage] = useState("");
   // TanStack mutation
@@ -46,7 +54,7 @@ export default function CreateDoctor() {
 
   const onSubmit = (data) => {
     setMessage("");
-    
+
     mutation.mutate({ ...data, role: "doctor", profileImage: imageURL });
   };
 
@@ -63,10 +71,13 @@ export default function CreateDoctor() {
       formData.append("upload_preset", "zenhom_upload");
       formData.append("cloud_name", "dprhixbik");
 
-      const res = await fetch("https://api.cloudinary.com/v1_1/dprhixbik/image/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dprhixbik/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const result = await res.json();
       console.log(result);
@@ -84,13 +95,15 @@ export default function CreateDoctor() {
     }
   };
   return (
-     <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
+    <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
       <h1 className="text-2xl font-bold mb-6">Create Doctor</h1>
 
       {message && (
         <div
           className={`p-3 mb-4 rounded ${
-            mutation.isError ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+            mutation.isError
+              ? "bg-red-100 text-red-700"
+              : "bg-green-100 text-green-700"
           }`}
         >
           {message}
@@ -106,7 +119,9 @@ export default function CreateDoctor() {
               {...register("firstName", { required: true })}
               className="w-full border p-2 rounded"
             />
-            {errors.firstName && <p className="text-red-500 text-sm">Required</p>}
+            {errors.firstName && (
+              <p className="text-red-500 text-sm">Required</p>
+            )}
           </div>
 
           <div>
@@ -116,7 +131,9 @@ export default function CreateDoctor() {
               {...register("lastName", { required: true })}
               className="w-full border p-2 rounded"
             />
-            {errors.lastName && <p className="text-red-500 text-sm">Required</p>}
+            {errors.lastName && (
+              <p className="text-red-500 text-sm">Required</p>
+            )}
           </div>
 
           <div>
@@ -146,7 +163,9 @@ export default function CreateDoctor() {
               {...register("password", { required: true, minLength: 6 })}
               className="w-full border p-2 rounded"
             />
-            {errors.password && <p className="text-red-500 text-sm">Min 6 chars</p>}
+            {errors.password && (
+              <p className="text-red-500 text-sm">Min 6 chars</p>
+            )}
           </div>
 
           {/* Doctor info */}
@@ -157,7 +176,9 @@ export default function CreateDoctor() {
               {...register("specialization", { required: true })}
               className="w-full border p-2 rounded"
             />
-            {errors.specialization && <p className="text-red-500 text-sm">Required</p>}
+            {errors.specialization && (
+              <p className="text-red-500 text-sm">Required</p>
+            )}
           </div>
 
           <div>
@@ -174,22 +195,21 @@ export default function CreateDoctor() {
             {errors.rank && <p className="text-red-500 text-sm">Required</p>}
           </div>
 
-      <div className="col-span-2">
-  <label className="block mb-1 font-medium">University</label>
+          <div className="col-span-2">
+            <label className="block mb-1 font-medium">University</label>
 
-  <Select
-    options={universityOptions}
-    placeholder="Select your university"
-    isSearchable
-    className="w-full"
-    onChange={(selected) => setValue("university", selected.value)}
-  />
+            <Select
+              options={universityOptions}
+              placeholder="Select your university"
+              isSearchable
+              className="w-full"
+              onChange={(selected) => setValue("university", selected.value)}
+            />
 
-  {errors.university && (
-    <p className="text-red-500 text-sm">Required</p>
-  )}
-</div>
-
+            {errors.university && (
+              <p className="text-red-500 text-sm">Required</p>
+            )}
+          </div>
 
           <div>
             <label className="block mb-1 font-medium">Experience (Years)</label>
@@ -198,7 +218,9 @@ export default function CreateDoctor() {
               {...register("experienceYears", { required: true, min: 0 })}
               className="w-full border p-2 rounded"
             />
-            {errors.experienceYears && <p className="text-red-500 text-sm">Required</p>}
+            {errors.experienceYears && (
+              <p className="text-red-500 text-sm">Required</p>
+            )}
           </div>
 
           <div>
@@ -208,7 +230,9 @@ export default function CreateDoctor() {
               {...register("consultationFee", { required: true, min: 0 })}
               className="w-full border p-2 rounded"
             />
-            {errors.consultationFee && <p className="text-red-500 text-sm">Required</p>}
+            {errors.consultationFee && (
+              <p className="text-red-500 text-sm">Required</p>
+            )}
           </div>
 
           <div>
@@ -221,36 +245,35 @@ export default function CreateDoctor() {
             />
           </div>
 
-        <div className="col-span-2">
-  <label className="block mb-1 font-medium">Available Days</label>
+          <div className="col-span-2">
+            <label className="block mb-1 font-medium">Available Days</label>
 
-  <div className="grid grid-cols-2 gap-2 p-3 border rounded-lg bg-gray-50">
-    {[
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ].map((day) => (
-      <label key={day} className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          value={day}
-          {...register("availableDays", { required: true })}
-          className="w-4 h-4"
-        />
-        {day}
-      </label>
-    ))}
-  </div>
+            <div className="grid grid-cols-2 gap-2 p-3 border rounded-lg bg-gray-50">
+              {[
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+              ].map((day) => (
+                <label key={day} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    value={day}
+                    {...register("availableDays", { required: true })}
+                    className="w-4 h-4"
+                  />
+                  {day}
+                </label>
+              ))}
+            </div>
 
-  {errors.availableDays && (
-    <p className="text-red-500 text-sm mt-1">Required</p>
-  )}
-</div>
-
+            {errors.availableDays && (
+              <p className="text-red-500 text-sm mt-1">Required</p>
+            )}
+          </div>
 
           <div className="col-span-2 grid grid-cols-2 gap-4">
             <div>
@@ -260,7 +283,9 @@ export default function CreateDoctor() {
                 {...register("workingHours.start", { required: true })}
                 className="w-full border p-2 rounded"
               />
-              {errors.workingHours?.start && <p className="text-red-500 text-sm">Required</p>}
+              {errors.workingHours?.start && (
+                <p className="text-red-500 text-sm">Required</p>
+              )}
             </div>
 
             <div>
@@ -270,11 +295,13 @@ export default function CreateDoctor() {
                 {...register("workingHours.end", { required: true })}
                 className="w-full border p-2 rounded"
               />
-              {errors.workingHours?.end && <p className="text-red-500 text-sm">Required</p>}
+              {errors.workingHours?.end && (
+                <p className="text-red-500 text-sm">Required</p>
+              )}
             </div>
           </div>
         </div>
-        
+
         <div>
           <label className="block mb-1 font-medium">Profile Image</label>
           <input
@@ -283,14 +310,24 @@ export default function CreateDoctor() {
             className="w-full border p-2 rounded"
             onChange={handleFileUpload}
           />
-          {uploading && <p className="text-blue-500 text-sm mt-1">Uploading...</p>}
+          {uploading && (
+            <p className="text-blue-500 text-sm mt-1">Uploading...</p>
+          )}
           {uploadMessage && (
-            <p className={`text-sm mt-1 ${imageURL ? "text-green-600" : "text-red-600"}`}>
+            <p
+              className={`text-sm mt-1 ${
+                imageURL ? "text-green-600" : "text-red-600"
+              }`}
+            >
               {uploadMessage}
             </p>
           )}
           {imageURL && (
-            <img src={imageURL} alt="Uploaded" className="mt-2 w-32 h-32 object-cover rounded" />
+            <img
+              src={imageURL}
+              alt="Uploaded"
+              className="mt-2 w-32 h-32 object-cover rounded"
+            />
           )}
         </div>
 

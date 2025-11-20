@@ -1,6 +1,6 @@
 // src/Features/Admin/Pages/Patients.jsx
 import { useQuery } from "@tanstack/react-query";
-import { getAllPatients } from "../../../Api/Services/PatientService";
+import { getAllPatients } from "../../../Api/Services/UserMangementService";
 
 export default function Patients() {
   const { data, isLoading, isError } = useQuery({
