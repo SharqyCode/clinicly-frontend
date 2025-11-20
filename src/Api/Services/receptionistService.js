@@ -17,10 +17,3 @@ export const createReceptionist = async (data) => {
 
   return response.data;
 };
-
-
-import api from "../axiosInstance"
-
-
-
-
