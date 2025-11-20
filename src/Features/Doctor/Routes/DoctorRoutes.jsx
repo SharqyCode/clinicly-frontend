@@ -5,6 +5,8 @@ import DiagnosisAI from "../Pages/DiagnosisAI";
 import DoctorDash from "../Pages/DoctorDash";
 import AppointmentsList from "../Pages/AppointmentsList";
 import PatientsList from "../Pages/PatientsList";
+import PrescriptionForm from "../Pages/PrescriptionForm";
+import PrescriptionsList from "../Pages/PrescriptionsList";
 
 export default function DoctorRoutes() {
   return (
@@ -14,6 +16,8 @@ export default function DoctorRoutes() {
         <Route path="appointments" element={<AppointmentsList />} />
         <Route path="patients" element={<PatientsList />} />
         <Route path="assistant" element={<DiagnosisAI />} />
+        <Route path="add-prescription" element={<PrescriptionForm />} />
+        <Route path="read-prescriptions" element={<PrescriptionsList />} />
       </Route>
     </Routes>
   );

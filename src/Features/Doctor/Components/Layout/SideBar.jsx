@@ -3,6 +3,9 @@ import {
   CalendarRangeIcon,
   LayoutDashboard,
   Menu,
+  Notebook,
+  NotebookPen,
+  NotebookTabs,
   ReceiptText,
   Timer,
   Users,
@@ -57,6 +60,26 @@ export default function SideBar() {
           >
             <CalendarRangeIcon size={20} />
             {isOpen && <span>Appointments</span>}
+          </Link>
+
+          <Link
+            to="add-prescription"
+            className={`${
+              !isOpen ? "justify-center" : "justify-start"
+            } flex items-center gap-3 `}
+          >
+            <NotebookPen size={20} />
+            {isOpen && <span>Add Prescription</span>}
+          </Link>
+
+          <Link
+            to="read-prescriptions"
+            className={`${
+              !isOpen ? "justify-center" : "justify-start"
+            } flex items-center gap-3 `}
+          >
+            <NotebookTabs size={20} />
+            {isOpen && <span>Prescriptions</span>}
           </Link>
 
           <Link
