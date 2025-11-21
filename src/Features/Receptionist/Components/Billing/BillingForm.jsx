@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useCreateInvoice } from "../../../../Hooks/useInvoice";
 import { useQuery } from "@tanstack/react-query";
 import { getAllAppointments } from "../../../../Api/Services/appointments";
-import { getAllPatients } from "../../../../Api/Services/patients";
+import toast from "react-hot-toast";
 
 export default function BillingForm() {
   const createMutation = useCreateInvoice();
@@ -11,6 +11,7 @@ export default function BillingForm() {
     appointmentId: "",
     patientId: "",
     baseAmount: "",
+    paidAmount: 0,
     discount: 0,
     discountType: "flat",
     taxRate: 0,
@@ -20,7 +21,6 @@ export default function BillingForm() {
   });
 
   const [appointmentFilter, setAppointmentFilter] = useState("");
-  const [patientFilter, setPatientFilter] = useState("");
 
   /* ===================== FETCH DATA ===================== */
 
@@ -29,44 +29,36 @@ export default function BillingForm() {
     queryFn: getAllAppointments,
   });
 
-  const { data: patientsData, isLoading: patientsLoading } = useQuery({
-    queryKey: ["billing-patients"],
-    queryFn: () => getAllPatients({}),
-  });
-
   // ✅ Normalize backend response shape
-  const appointmentsRaw = apptData?.data || apptData?.appointments || [];
-  const patientsRaw = patientsData?.data || patientsData?.patients || [];
+  const appointmentsRaw = Array.isArray(apptData)
+    ? apptData
+    : apptData?.data || apptData?.appointments || [];
 
   /* ===================== FILTER LOGIC ===================== */
 
   const appointments = useMemo(() => {
-    if (!appointmentFilter) return appointmentsRaw;
+    const list = appointmentsRaw || [];
+    if (!appointmentFilter) return list;
     const term = appointmentFilter.toLowerCase();
 
-    return appointmentsRaw.filter((a) => {
+    return list.filter((a) => {
+      // Support multiple shapes: patient.userId, patientInfo.fullName, doctor.userId, doctorInfo.fullName
       const patientName = a?.patient?.userId?.firstName
         ? `${a.patient.userId.firstName} ${a.patient.userId.lastName}`
-        : "";
+        : a?.patientInfo?.fullName || "";
       const doctorName = a?.doctor?.userId?.firstName
         ? `${a.doctor.userId.firstName} ${a.doctor.userId.lastName}`
-        : "";
+        : a?.doctorInfo?.fullName || "";
+      const dateStr = a?.startTime ? new Date(a.startTime).toLocaleDateString() : "";
       return (
         patientName.toLowerCase().includes(term) ||
-        doctorName.toLowerCase().includes(term)
+        doctorName.toLowerCase().includes(term) ||
+        dateStr.toLowerCase().includes(term)
       );
     });
   }, [appointmentsRaw, appointmentFilter]);
 
-  const patients = useMemo(() => {
-    if (!patientFilter) return patientsRaw;
-    const term = patientFilter.toLowerCase();
-
-    return patientsRaw.filter((p) => {
-      const name = `${p?.userId?.firstName || ""} ${p?.userId?.lastName || ""}`;
-      return name.toLowerCase().includes(term);
-    });
-  }, [patientsRaw, patientFilter]);
+  // No patient selector; patient is inferred from appointment
 
   /* ===================== HANDLERS ===================== */
 
@@ -74,7 +66,7 @@ export default function BillingForm() {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: ["baseAmount", "discount", "taxRate", "pointsUsed"].includes(name)
+      [name]: ["baseAmount", "discount", "taxRate", "pointsUsed", "paidAmount"].includes(name)
         ? Number(value)
         : value,
     }));
@@ -94,20 +86,46 @@ export default function BillingForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.appointmentId || !form.patientId) {
-      alert("Appointment and Patient are required");
+    if (!form.appointmentId) {
+      toast.error("Please select an appointment");
+      return;
+    }
+
+    // Derive patientId from selected appointment if not set
+    const selectedAppt = appointments.find((a) => a._id === form.appointmentId);
+    const derivedPatientId =
+      selectedAppt?.patient?._id ||
+      selectedAppt?.patientId ||
+      selectedAppt?.patient?.userId?._id ||
+      selectedAppt?.patientInfo?._id ||
+      form.patientId;
+    if (!derivedPatientId) {
+      toast.error("Could not determine patient from the selected appointment");
       return;
     }
 
     try {
       
-      await createMutation.mutateAsync(form);
-      alert("Invoice created successfully");
+      const payload = {
+        appointmentId: form.appointmentId,
+        patientId: derivedPatientId,
+        baseAmount: form.baseAmount,
+        discount: form.discount,
+        discountType: form.discountType,
+        taxRate: form.taxRate,
+        paymentMethod: form.paymentMethod,
+        notes: form.notes,
+        pointsUsed: form.pointsUsed,
+        paidAmount: form.paidAmount,
+      };
+      await createMutation.mutateAsync(payload);
+      toast.success("Invoice created successfully");
 
       setForm({
         appointmentId: "",
         patientId: "",
         baseAmount: "",
+        paidAmount: 0,
         discount: 0,
         discountType: "flat",
         taxRate: 0,
@@ -115,9 +133,14 @@ export default function BillingForm() {
         notes: "",
         pointsUsed: 0,
       });
-    } catch (err) {
-      alert(err?.response?.data?.message || "Something went wrong");
-    }
+    } catch (error) {
+      //alert(err?.response?.data?.message || "Something went wrong");
+     console.log("FULL ERROR:", error);
+
+  
+
+  toast.error(error.message);
+    }   
   };
 
   /* ===================== UI ===================== */
@@ -138,61 +161,137 @@ export default function BillingForm() {
         <select
           className="select select-bordered w-full"
           value={form.appointmentId}
-          onChange={(e) => setForm({ ...form, appointmentId: e.target.value })}
+          onChange={(e) => {
+            const id = e.target.value;
+            const selectedAppt = appointments.find((a) => a._id === id);
+            const inferredPatientId =
+              selectedAppt?.patient?._id ||
+              selectedAppt?.patientId ||
+              selectedAppt?.patient?.userId?._id ||
+              selectedAppt?.patientInfo?._id || "";
+            setForm((prev) => ({
+              ...prev,
+              appointmentId: id,
+              patientId: inferredPatientId,
+            }));
+          }}
         >
-          <option value="">Select Appointment</option>
-          {apptsLoading && <option>Loading...</option>}
-          {appointments.map((a) => (
-            <option key={a._id} value={a._id}>
-              {a?.patient?.userId?.firstName} {a?.patient?.userId?.lastName} -
-              Dr. {a?.doctor?.userId?.firstName}
-            </option>
-          ))}
-        </select>
+  <option value="">Select Appointment</option>
+  {apptsLoading && <option>Loading...</option>}
+  {appointments.map((a) => (
+    <option key={a._id} value={a._id}>
+      {a?.patient?.userId?.firstName} {a?.patient?.userId?.lastName} -
+      Dr. {a?.doctor?.userId?.firstName}
+    </option>
+  ))}
+</select>
+
       </div>
 
-      {/* PATIENT */}
-      <div>
-        <label className="block mb-1">Patient</label>
-        <input
-          className="input input-bordered w-full mb-2"
-          placeholder="Search patient..."
-          value={patientFilter}
-          onChange={(e) => setPatientFilter(e.target.value)}
-        />
-        <select
-          className="select select-bordered w-full"
-          value={form.patientId}
-          onChange={(e) => setForm({ ...form, patientId: e.target.value })}
-        >
-          <option value="">Select Patient</option>
-          {patientsLoading && <option>Loading...</option>}
-          {patients.map((p) => (
-            <option key={p._id} value={p._id}>
-              {p?.userId?.firstName} {p?.userId?.lastName}
-            </option>
-          ))}
-        </select>
-      </div>
+     
 
       {/* FINANCIAL */}
+     {/* FINANCIAL SECTION */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+  {/* Base Amount */}
+  <div>
+    <label className="block mb-1 font-medium">Base Amount (EGP)</label>
+    <input
+      className="input input-bordered w-full"
+      type="number"
+      name="baseAmount"
+      min="0"
+      placeholder="Enter base amount"
+      value={form.baseAmount}
+      onChange={onChange}
+      required
+    />
+  </div>
+  
+  <div>
+  <label className="block mb-1 font-medium">Paid Amount (EGP)</label>
+  <input
+    className="input input-bordered w-full"
+    type="number"
+    name="paidAmount"
+    min="0"
+    placeholder="Amount paid by patient"
+    value={form.paidAmount}
+    onChange={onChange}
+  />
+</div>
+
+
+  {/* Discount */}
+  <div>
+    <label className="block mb-1 font-medium">Discount</label>
+    <div className="flex gap-2">
       <input
         className="input input-bordered w-full"
         type="number"
-        name="baseAmount"
-        placeholder="Base Amount"
-        value={form.baseAmount}
+        name="discount"
+        min="0"
+        placeholder="Discount value"
+        value={form.discount}
         onChange={onChange}
-        required
       />
 
-      <textarea
-        className="textarea textarea-bordered w-full"
-        name="notes"
-        placeholder="Notes"
-        value={form.notes}
+      <select
+        className="select select-bordered"
+        name="discountType"
+        value={form.discountType}
         onChange={onChange}
-      />
+      >
+        <option value="flat">EGP</option>
+        <option value="percentage">%</option>
+      </select>
+    </div>
+  </div>
+
+  {/* Payment Method */}
+  <div>
+    <label className="block mb-1 font-medium">Payment Method</label>
+    <select
+      className="select select-bordered w-full"
+      name="paymentMethod"
+      value={form.paymentMethod}
+      onChange={onChange}
+    >
+      <option value="cash">Cash</option>
+      <option value="card">Card</option>
+      <option value="online">Online</option>
+      <option value="insurance">Insurance</option>
+    </select>
+  </div>
+
+  {/* Loyalty Points */}
+  <div>
+    <label className="block mb-1 font-medium">Points Used</label>
+    <input
+      className="input input-bordered w-full"
+      type="number"
+      name="pointsUsed"
+      min="0"
+      value={form.pointsUsed}
+      onChange={onChange}
+    />
+  </div>
+</div>
+
+{/* Notes */}
+<div>
+  <label className="block mb-1 font-medium">Notes</label>
+  <textarea
+    className="textarea textarea-bordered w-full"
+    rows="3"
+    name="notes"
+    placeholder="Optional notes..."
+    value={form.notes}
+    onChange={onChange}
+  />
+</div>
+
 
       <div className="flex justify-between items-center bg-gray-100 p-4 rounded-xl">
         <span className="font-semibold">Total: EGP {estimatedTotal}</span>

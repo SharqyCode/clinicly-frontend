@@ -5,10 +5,14 @@ import AdminRoutes from "../Features/Admin/Routes/AdminRoutes";
 import ClinicLandingPage from "../Features/Home/Pages/ClinicLandingPage";
 import AuthRoutes from "../Features/Auth/Routes/AuthRoutes";
 import PatientRoutes from "../Features/Patient/Routes/PatientRoutes";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
+    <>
+     <Toaster position="top-right" reverseOrder={false} />
     <Routes>
+     
       <Route path="/*" element={<ClinicLandingPage />} />
       <Route path="/doctor/*" element={<DoctorRoutes />} />
       <Route path="/patient/*" element={<PatientRoutes />} />
@@ -16,6 +20,7 @@ function App() {
       <Route path="/admin/*" element={<AdminRoutes />} />
       <Route path="/auth/*" element={<AuthRoutes />} />
     </Routes>
+    </>
   );
 }
 
