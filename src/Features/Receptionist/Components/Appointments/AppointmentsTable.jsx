@@ -17,6 +17,7 @@ export default function AppointmentsTable({
     setShowCancelModal(true);
   };
 
+  console.log(appointments);
   return (
     <>
       <div className="mt-10 flex max-w-full overflow-x-auto shadow-md rounded-xl">
@@ -43,9 +44,9 @@ export default function AppointmentsTable({
               appointments.map((a) => (
                 <tr className="hover:bg-bg-light-secondary" key={a._id}>
                   <td className="font-medium break-all">
-                    {a.patientInfo?.fullName}
+                    {a.patient.fullName}
                   </td>
-                  <td className="break-all">Dr. {a.doctorInfo?.fullName}</td>
+                  <td className="break-all">Dr. {a.doctor.fullName}</td>
 
                   <td className="break-all">
                     {format(new Date(a.startTime), "yyyy-MM-dd")}
