@@ -1,4 +1,5 @@
 import {
+  Brain,
   CalendarRangeIcon,
   LayoutDashboard,
   Menu,
@@ -76,7 +77,7 @@ export default function SideBar() {
               !isOpen ? "justify-center" : "justify-start"
             } flex items-center gap-3 `}
           >
-            <ReceiptText size={20} />
+            <Brain size={20} />
             {isOpen && <span>AI Specialty Picker</span>}
           </Link>
 

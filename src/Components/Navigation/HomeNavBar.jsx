@@ -33,7 +33,7 @@ export default function HomeNavBar() {
             className="menu menu-sm dropdown-content bg-base-100 rounded-box w-52 mt-3 p-2 shadow right-0"
           >
             <li>
-              <Link className="p-2 text-lg" to="/patient/appointments/book">
+              <Link className="p-2 text-lg" to="/auth/login">
                 Book Appointment
               </Link>
             </li>
