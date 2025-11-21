@@ -8,6 +8,7 @@ import {
   NotebookTabs,
   ReceiptText,
   Timer,
+  User,
   Users,
 } from "lucide-react";
 import { useState } from "react";
@@ -102,6 +103,16 @@ export default function SideBar() {
           >
             <Brain size={20} />
             {isOpen && <span>AI Diagnosis</span>}
+          </Link>
+
+          <Link
+            to="profile"
+            className={`${
+              !isOpen ? "justify-center" : "justify-start"
+            } flex items-center gap-3 `}
+          >
+            <User size={20} />
+            {isOpen && <span>Profile</span>}
           </Link>
         </nav>
         {isOpen && (

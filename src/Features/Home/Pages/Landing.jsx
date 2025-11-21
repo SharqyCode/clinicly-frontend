@@ -8,6 +8,7 @@ import patientCare from "../assets/Landing/patientCare.jpg";
 import { useCountTo } from "../Hooks/useCountTo";
 import StatCard from "../Components/statCard";
 import TestimonialCard from "../Components/TestimonialCard";
+import ActionButton from "../Components/ActionButton";
 
 /* ----------------- small helpers ----------------- */
 
@@ -73,27 +74,22 @@ export default function LandingPage() {
           <Link to="/pricing" className="text-gray-600 hover:text-gray-900">
             Pricing
           </Link>
-          <Link
+          <ActionButton
             to="/auth/login"
-            className="px-4 py-2 rounded-lg border border-blue-200 text-blue-700 hover:bg-blue-50"
+            variant="secondary"
+            className="px-4 py-2 text-sm"
           >
             Sign in
-          </Link>
-          <Link
-            to="/patient/book"
-            className="ml-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:shadow-md"
-          >
+          </ActionButton>
+          <ActionButton to="/patient/book" className="px-4 py-2 text-sm">
             Book now
-          </Link>
+          </ActionButton>
         </div>
 
         <div className="md:hidden">
-          <Link
-            to="/patient/book"
-            className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow"
-          >
+          <ActionButton to="/patient/book" className="px-3 py-2 text-sm">
             Book
-          </Link>
+          </ActionButton>
         </div>
       </nav>
 
@@ -126,28 +122,17 @@ export default function LandingPage() {
             </motion.p>
 
             <motion.div variants={fadeUp} className="flex gap-4 items-center">
-              <Link
-                to="/auth/register"
-                className="inline-flex items-center gap-3 bg-blue-600 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:scale-[1.02] transition-transform"
-              >
-                Get Started
-                <svg className="w-5 h-5 -mr-1" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M5 12h14M13 5l7 7-7 7"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </Link>
+              <ActionButton to="/auth/register" className="rounded-full">
+                Get Started →
+              </ActionButton>
 
-              <Link
+              <ActionButton
                 to="/patient/book"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 hover:shadow-sm transition"
+                variant="secondary"
+                className="rounded-full"
               >
                 Book Appointment
-              </Link>
+              </ActionButton>
             </motion.div>
 
             {/* small features chips */}

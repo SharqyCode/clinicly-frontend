@@ -15,6 +15,12 @@ export default function HomeNavBar() {
           Book Appointment
         </Link>
         <Link
+          to="/doctors"
+          className="text-sm px-4 py-2 rounded-md hover:bg-slate-100"
+        >
+          See Doctors
+        </Link>
+        <Link
           to="/doctor/apply"
           className="text-sm px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:opacity-95"
         >
