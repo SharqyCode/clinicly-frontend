@@ -1,5 +1,8 @@
 import React from "react";
-import { Routes, Route } from "react-router";
+import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "../../../Guards/ProtectedRoute";
+import RoleRoute from "../../../Guards/RoleRoute";
+
 import CreateDoctor from "../Pages/CreateDoctor";
 import AdminLayout from "../Layout/Layout";
 import Dashboard from "../Pages/Dashboard";
@@ -10,7 +13,16 @@ import CreateReceptionist from "../Pages/CreateReceptionist";
 export default function AdminRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<AdminLayout />}>
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <RoleRoute allowed={["admin"]}>
+              <AdminLayout />
+            </RoleRoute>
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<Dashboard />} />
         <Route path="create-doctor" element={<CreateDoctor />} />
         <Route path="create-receptionist" element={<CreateReceptionist />} />
@@ -20,3 +32,4 @@ export default function AdminRoutes() {
     </Routes>
   );
 }
+

@@ -44,7 +44,7 @@ export default function PatientDash() {
             {/* Header */}
             <div className="flex flex-wrap justify-between gap-3 p-4">
               <p className="text-text-dark text-[32px] font-bold leading-tight min-w-72">
-                Welcome back, Sophia
+                Welcome back, {user?.name?.split(" ")[0]}
               </p>
             </div>
 

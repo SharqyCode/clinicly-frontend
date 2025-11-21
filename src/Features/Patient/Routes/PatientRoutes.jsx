@@ -1,5 +1,8 @@
 import React from "react";
-import { Route, Routes } from "react-router";
+import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "../../../Guards/ProtectedRoute";
+import RoleRoute from "../../../Guards/RoleRoute";
+
 import Layout from "../Layout/Layout";
 import PatientDash from "../Pages/PatientDash";
 import MedicalRecords from "../Pages/MedicalRecords";
@@ -12,7 +15,16 @@ import Profile from "../Pages/Profile";
 export default function PatientRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <RoleRoute allowed={["patient"]}>
+              <Layout />
+            </RoleRoute>
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<PatientDash />} />
         <Route path="records" element={<MedicalRecords />} />
         <Route path="appointments" element={<MyAppointments />} />
