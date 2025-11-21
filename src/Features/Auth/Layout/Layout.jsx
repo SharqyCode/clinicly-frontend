@@ -6,11 +6,13 @@ import Logo from "../../../Components/Navigation/Logo";
 export default function Layout() {
   return (
     <>
-      <header className=" bg-[var(--color-bg-light-secondary)] p-4">
-        <Logo />
-      </header>
-      <Outlet />
-      <MainFooter />
+      <div className=" bg-gray-50">
+        <header className=" p-4">
+          <Logo />
+        </header>
+        <Outlet />
+        <MainFooter />
+      </div>
     </>
   );
 }
