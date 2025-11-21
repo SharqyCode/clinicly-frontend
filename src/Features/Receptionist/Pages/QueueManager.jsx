@@ -18,13 +18,14 @@ import QueueTable from "../Components/QueueTable";
 import TodayAppointments from "../Components/TodayAppointments";
 import { useUpdateAppointment } from "../../../Hooks/useAppointment";
 import { Snackbar } from "@mui/material";
+import { useNavigate } from "react-router";
 
 export default function QueueManager() {
   const queryClient = useQueryClient();
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [snackOpen, setSnackOpen] = useState(false);
-
+  const navigate = useNavigate();
   // Fetch all doctors
   const { data: doctorsData } = useQuery({
     queryKey: ["doctors"],
@@ -80,9 +81,15 @@ export default function QueueManager() {
   // Finish session
   const finishMutation = useMutation({
     mutationFn: finishSession,
-    onSuccess: () => {
+    onSuccess: async (data, variables) => {
       queryClient.invalidateQueries(["doctorQueue", selectedDoctor]);
       queryClient.invalidateQueries(["appointments"]);
+      // console.log(data);
+      navigate(
+        `/receptionist/billing?queueEntry=${await JSON.stringify(
+          data?.data?.queueEntry
+        )}`
+      );
     },
   });
 

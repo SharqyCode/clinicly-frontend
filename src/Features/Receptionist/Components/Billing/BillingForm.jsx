@@ -1,15 +1,29 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useCreateInvoice } from "../../../../Hooks/useInvoice";
 import { useQuery } from "@tanstack/react-query";
 import { getAllAppointments } from "../../../../Api/Services/appointments";
 import toast from "react-hot-toast";
+import { useSearchParams } from "react-router";
 
 export default function BillingForm() {
   const createMutation = useCreateInvoice();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queueEntry = searchParams.get("queueEntry");
+  const [entryObj, setEntryObj] = useState(() =>
+    JSON.parse(queueEntry || "{}")
+  );
+  console.log(entryObj);
 
+  // useEffect(() => {
+  //   const getEntryObj = async () => await JSON.parse(queueEntry);
+  //   getEntryObj();
+  // }, []);
+
+  // const entryObj = getEntryObj();
+  console.log(entryObj);
   const [form, setForm] = useState({
-    appointmentId: "",
-    patientId: "",
+    appointmentId: entryObj?.appointment || "",
+    patientId: entryObj?.patient || "",
     baseAmount: "",
     paidAmount: 0,
     discount: 0,
@@ -30,9 +44,13 @@ export default function BillingForm() {
   });
 
   // ✅ Normalize backend response shape
-  const appointmentsRaw = Array.isArray(apptData)
-    ? apptData
-    : apptData?.data || apptData?.appointments || [];
+  const appointmentsRaw = useMemo(
+    () =>
+      Array.isArray(apptData)
+        ? apptData
+        : apptData?.data || apptData?.appointments || [],
+    [apptData]
+  );
 
   /* ===================== FILTER LOGIC ===================== */
 
@@ -49,7 +67,9 @@ export default function BillingForm() {
       const doctorName = a?.doctor?.userId?.firstName
         ? `${a.doctor.userId.firstName} ${a.doctor.userId.lastName}`
         : a?.doctorInfo?.fullName || "";
-      const dateStr = a?.startTime ? new Date(a.startTime).toLocaleDateString() : "";
+      const dateStr = a?.startTime
+        ? new Date(a.startTime).toLocaleDateString()
+        : "";
       return (
         patientName.toLowerCase().includes(term) ||
         doctorName.toLowerCase().includes(term) ||
@@ -66,7 +86,13 @@ export default function BillingForm() {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: ["baseAmount", "discount", "taxRate", "pointsUsed", "paidAmount"].includes(name)
+      [name]: [
+        "baseAmount",
+        "discount",
+        "taxRate",
+        "pointsUsed",
+        "paidAmount",
+      ].includes(name)
         ? Number(value)
         : value,
     }));
@@ -77,7 +103,8 @@ export default function BillingForm() {
     let total = base;
 
     if (form.discountType === "flat") total -= form.discount;
-    if (form.discountType === "percentage") total -= (form.discount / 100) * base;
+    if (form.discountType === "percentage")
+      total -= (form.discount / 100) * base;
     if (form.taxRate > 0) total += (form.taxRate / 100) * total;
 
     return Math.max(0, total.toFixed(2));
@@ -105,7 +132,6 @@ export default function BillingForm() {
     }
 
     try {
-      
       const payload = {
         appointmentId: form.appointmentId,
         patientId: derivedPatientId,
@@ -135,18 +161,19 @@ export default function BillingForm() {
       });
     } catch (error) {
       //alert(err?.response?.data?.message || "Something went wrong");
-     console.log("FULL ERROR:", error);
+      console.log("FULL ERROR:", error);
 
-  
-
-  toast.error(error.message);
-    }   
+      toast.error(error.message);
+    }
   };
 
   /* ===================== UI ===================== */
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-2xl shadow">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 p-6 bg-white rounded-2xl shadow"
+    >
       <h2 className="text-xl font-bold">Create Invoice</h2>
 
       {/* APPOINTMENT */}
@@ -157,10 +184,12 @@ export default function BillingForm() {
           placeholder="Search appointment..."
           value={appointmentFilter}
           onChange={(e) => setAppointmentFilter(e.target.value)}
+          disabled={!!queueEntry}
         />
         <select
           className="select select-bordered w-full"
           value={form.appointmentId}
+          disabled={!!queueEntry}
           onChange={(e) => {
             const id = e.target.value;
             const selectedAppt = appointments.find((a) => a._id === id);
@@ -168,7 +197,8 @@ export default function BillingForm() {
               selectedAppt?.patient?._id ||
               selectedAppt?.patientId ||
               selectedAppt?.patient?.userId?._id ||
-              selectedAppt?.patientInfo?._id || "";
+              selectedAppt?.patientInfo?._id ||
+              "";
             setForm((prev) => ({
               ...prev,
               appointmentId: id,
@@ -176,122 +206,116 @@ export default function BillingForm() {
             }));
           }}
         >
-  <option value="">Select Appointment</option>
-  {apptsLoading && <option>Loading...</option>}
-  {appointments.map((a) => (
-    <option key={a._id} value={a._id}>
-      {a?.patient?.userId?.firstName} {a?.patient?.userId?.lastName} -
-      Dr. {a?.doctor?.userId?.firstName}
-    </option>
-  ))}
-</select>
-
+          <option value="">Select Appointment</option>
+          {apptsLoading && <option>Loading...</option>}
+          {appointments.map((a) => (
+            <option key={a._id} value={a._id}>
+              {a?.patient?.userId?.firstName} {a?.patient?.userId?.lastName} -
+              Dr. {a?.doctor?.userId?.firstName}
+            </option>
+          ))}
+        </select>
       </div>
 
-     
-
       {/* FINANCIAL */}
-     {/* FINANCIAL SECTION */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* FINANCIAL SECTION */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Base Amount */}
+        <div>
+          <label className="block mb-1 font-medium">Base Amount (EGP)</label>
+          <input
+            className="input input-bordered w-full"
+            type="number"
+            name="baseAmount"
+            min="0"
+            placeholder="Enter base amount"
+            value={form.baseAmount}
+            onChange={onChange}
+            required
+          />
+        </div>
 
-  {/* Base Amount */}
-  <div>
-    <label className="block mb-1 font-medium">Base Amount (EGP)</label>
-    <input
-      className="input input-bordered w-full"
-      type="number"
-      name="baseAmount"
-      min="0"
-      placeholder="Enter base amount"
-      value={form.baseAmount}
-      onChange={onChange}
-      required
-    />
-  </div>
-  
-  <div>
-  <label className="block mb-1 font-medium">Paid Amount (EGP)</label>
-  <input
-    className="input input-bordered w-full"
-    type="number"
-    name="paidAmount"
-    min="0"
-    placeholder="Amount paid by patient"
-    value={form.paidAmount}
-    onChange={onChange}
-  />
-</div>
+        <div>
+          <label className="block mb-1 font-medium">Paid Amount (EGP)</label>
+          <input
+            className="input input-bordered w-full"
+            type="number"
+            name="paidAmount"
+            min="0"
+            placeholder="Amount paid by patient"
+            value={form.paidAmount}
+            onChange={onChange}
+          />
+        </div>
 
+        {/* Discount */}
+        <div>
+          <label className="block mb-1 font-medium">Discount</label>
+          <div className="flex gap-2">
+            <input
+              className="input input-bordered w-full"
+              type="number"
+              name="discount"
+              min="0"
+              placeholder="Discount value"
+              value={form.discount}
+              onChange={onChange}
+            />
 
-  {/* Discount */}
-  <div>
-    <label className="block mb-1 font-medium">Discount</label>
-    <div className="flex gap-2">
-      <input
-        className="input input-bordered w-full"
-        type="number"
-        name="discount"
-        min="0"
-        placeholder="Discount value"
-        value={form.discount}
-        onChange={onChange}
-      />
+            <select
+              className="select select-bordered"
+              name="discountType"
+              value={form.discountType}
+              onChange={onChange}
+            >
+              <option value="flat">EGP</option>
+              <option value="percentage">%</option>
+            </select>
+          </div>
+        </div>
 
-      <select
-        className="select select-bordered"
-        name="discountType"
-        value={form.discountType}
-        onChange={onChange}
-      >
-        <option value="flat">EGP</option>
-        <option value="percentage">%</option>
-      </select>
-    </div>
-  </div>
+        {/* Payment Method */}
+        <div>
+          <label className="block mb-1 font-medium">Payment Method</label>
+          <select
+            className="select select-bordered w-full"
+            name="paymentMethod"
+            value={form.paymentMethod}
+            onChange={onChange}
+          >
+            <option value="cash">Cash</option>
+            <option value="card">Card</option>
+            <option value="online">Online</option>
+            <option value="insurance">Insurance</option>
+          </select>
+        </div>
 
-  {/* Payment Method */}
-  <div>
-    <label className="block mb-1 font-medium">Payment Method</label>
-    <select
-      className="select select-bordered w-full"
-      name="paymentMethod"
-      value={form.paymentMethod}
-      onChange={onChange}
-    >
-      <option value="cash">Cash</option>
-      <option value="card">Card</option>
-      <option value="online">Online</option>
-      <option value="insurance">Insurance</option>
-    </select>
-  </div>
+        {/* Loyalty Points */}
+        <div>
+          <label className="block mb-1 font-medium">Points Used</label>
+          <input
+            className="input input-bordered w-full"
+            type="number"
+            name="pointsUsed"
+            min="0"
+            value={form.pointsUsed}
+            onChange={onChange}
+          />
+        </div>
+      </div>
 
-  {/* Loyalty Points */}
-  <div>
-    <label className="block mb-1 font-medium">Points Used</label>
-    <input
-      className="input input-bordered w-full"
-      type="number"
-      name="pointsUsed"
-      min="0"
-      value={form.pointsUsed}
-      onChange={onChange}
-    />
-  </div>
-</div>
-
-{/* Notes */}
-<div>
-  <label className="block mb-1 font-medium">Notes</label>
-  <textarea
-    className="textarea textarea-bordered w-full"
-    rows="3"
-    name="notes"
-    placeholder="Optional notes..."
-    value={form.notes}
-    onChange={onChange}
-  />
-</div>
-
+      {/* Notes */}
+      <div>
+        <label className="block mb-1 font-medium">Notes</label>
+        <textarea
+          className="textarea textarea-bordered w-full"
+          rows="3"
+          name="notes"
+          placeholder="Optional notes..."
+          value={form.notes}
+          onChange={onChange}
+        />
+      </div>
 
       <div className="flex justify-between items-center bg-gray-100 p-4 rounded-xl">
         <span className="font-semibold">Total: EGP {estimatedTotal}</span>
