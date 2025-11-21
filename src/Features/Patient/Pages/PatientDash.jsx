@@ -8,9 +8,12 @@ import mail from "../../../assets/mail.svg";
 import homelogo from "../../../assets/homelogo.svg";
 import msg from "../../../assets/msg.svg";
 import profile from "../../../assets/profile.svg";
+import { useAuth } from "../../../Context/AuthContext";
 
 export default function PatientDash() {
   const { data, isLoading, isError, error } = usePatients();
+  const { user } = useAuth();
+  console.log(user);
 
   // Loading or error states for patients
   if (isLoading)
