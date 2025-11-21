@@ -7,6 +7,7 @@ import AppointmentsList from "../Pages/AppointmentsList";
 import PatientsList from "../Pages/PatientsList";
 import PrescriptionForm from "../Pages/PrescriptionForm";
 import PrescriptionsList from "../Pages/PrescriptionsList";
+import Profile from "../Pages/Profile";
 
 export default function DoctorRoutes() {
   return (
@@ -18,6 +19,7 @@ export default function DoctorRoutes() {
         <Route path="assistant" element={<DiagnosisAI />} />
         <Route path="add-prescription" element={<PrescriptionForm />} />
         <Route path="read-prescriptions" element={<PrescriptionsList />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
     </Routes>
   );
