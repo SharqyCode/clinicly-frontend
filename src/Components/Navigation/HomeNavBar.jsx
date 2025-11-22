@@ -2,42 +2,112 @@ import React from "react";
 import { Link } from "react-router";
 import Logo from "./Logo";
 import { UserCircle } from "lucide-react";
+import { useAuth } from "../../Context/AuthContext";
+import { Avatar } from "@mui/material";
 
 export default function HomeNavBar() {
+  const { user, logout } = useAuth();
   return (
-    <nav className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-      <Logo />
-      <div className="flex items-center gap-4">
-        <Link
-          to="/patient/appointments/book"
-          className="text-sm px-4 py-2 rounded-md hover:bg-slate-100"
-        >
-          Book Appointment
-        </Link>
-        <Link
-          to="/doctors"
-          className="text-sm px-4 py-2 rounded-md hover:bg-slate-100"
-        >
-          See Doctors
-        </Link>
-        <Link
-          to="/doctor/apply"
-          className="text-sm px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:opacity-95"
-        >
-          Join as Doctor
-        </Link>
-        <Link
-          to="/auth/signup"
-          className="text-sm px-4 py-2  rounded-md  hover:opacity-95"
-        >
-          <UserCircle />
-        </Link>
-        <Link
-          to="/auth/login"
-          className="text-sm px-4 py-2 rounded-md hover:bg-slate-100"
-        >
-          Login
-        </Link>
+    <nav className="navbar bg-base-100 shadow-sm md:px-8">
+      <div className="flex justify-between w-full">
+        <Logo />
+        {/* Mobile menu button */}
+        <div className="dropdown">
+          <button tabIndex={0} className="btn btn-ghost lg:hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+
+          {/* Mobile dropdown menu */}
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box w-52 mt-3 p-2 shadow right-0"
+          >
+            {!user ? (
+              <>
+                <li>
+                  <Link className="p-2 text-lg" to="/auth/login">
+                    Book Appointment
+                  </Link>
+                </li>
+                <li>
+                  <Link className="p-2 text-lg" to="/doctors">
+                    See Doctors
+                  </Link>
+                </li>
+                <li>
+                  <Link className="p-2 text-lg" to="/auth/login">
+                    Login
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link className="p-2 text-lg" to="/auth/login">
+                    <UserCircle size={20} className="mr-4" />
+                    Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link className="p-2 text-lg" onClick={logout}>
+                    Logout
+                  </Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+      </div>
+
+      {/* Desktop menu */}
+      <div className="navbar-end hidden lg:flex">
+        <ul className="menu menu-horizontal gap-3 px-1">
+          {!user ? (
+            <>
+              <li>
+                <Link to={`/auth/login`} className="btn btn-primary">
+                  Book Appointment
+                </Link>
+              </li>
+              <li>
+                <Link to="/doctors" className="btn btn-neutral">
+                  See Doctors
+                </Link>
+              </li>
+              <li>
+                <Link to="/auth/login" className="btn btn-outline">
+                  Login
+                </Link>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link to={`/${user.role}`}>
+                  <UserCircle size={30} />
+                </Link>
+              </li>
+              <li>
+                <Link onClick={logout} className="btn btn-ghost">
+                  Logout
+                </Link>
+              </li>
+            </>
+          )}
+        </ul>
       </div>
     </nav>
   );

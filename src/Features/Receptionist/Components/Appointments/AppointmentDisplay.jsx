@@ -12,7 +12,7 @@ export default function AppointmentDisplay() {
     date: "",
     doctor: "",
     patient: "",
-    status: "",
+    status: "Scheduled",
   });
 
   const [snackOpen, setSnackOpen] = useState(false);
@@ -20,7 +20,7 @@ export default function AppointmentDisplay() {
 
   const { data, isLoading, isError } = useAppointments(filters);
 
-  if (data) console.log("appointments", data);
+  if (data) console.log("appointments", data.appointments);
 
   const handleInputChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
