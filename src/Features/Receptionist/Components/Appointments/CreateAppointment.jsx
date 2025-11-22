@@ -8,15 +8,13 @@ import ConfirmBooking from "../confirmBooking";
 import DoctorTime from "../DoctorTime";
 import { green, red } from "@mui/material/colors";
 import SnackbarContent from "@mui/material/SnackbarContent";
-
+import { useAuth } from "../../../../context/AuthContext";
 export default function CreateAppointment() {
-  const user = {
-    fullName: "Pew Pewson",
-    phone: "01234567890",
-    email: "pew@pewmail.com",
-    role: "receptionist",
-    _id: "6915892272440581fe345e97",
-  };
+  const { user, loading } = useAuth();
+
+  if (loading) return <p>Loading user...</p>;
+
+  
 
   const [activePatient, setActivePatient] = useState(() =>
     user.role === "patient" ? { ...user } : null
