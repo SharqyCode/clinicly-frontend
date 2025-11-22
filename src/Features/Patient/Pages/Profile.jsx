@@ -1,9 +1,9 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProfileInfo from "../components/ProfileInfo";
-import EditeProfile from "../components/EditeProfile";
 import { getAllPatients } from "../../../Api/Services/PatientService";
 import { useAuth } from "../../../Context/AuthContext";
+import EditProfile from "../Components/EditProfile";
 // import { getAllPatients } from "../../../Api/Services/patients";
 
 export default function Profile() {
@@ -42,8 +42,24 @@ export default function Profile() {
           {/* <ProfileAvatar imageUrl={data.imageUrl} /> */}
           <div className="flex-1">
             <ProfileInfo patient={data.data[0]} />
-            <hr className="my-6 border-gray-300" />
-            <EditeProfile patient={data.data[0]} />
+
+            {/* MODAL (Hidden, controlled via dialog) */}
+            <dialog id="editProfileModal" className="modal">
+              <div className="modal-box max-w-3xl">
+                <h3 className="font-bold text-xl mb-4">Edit Profile</h3>
+                <EditProfile patient={data.data[0]} />
+                <div className="modal-action">
+                  <button
+                    className="btn"
+                    onClick={() =>
+                      document.getElementById("editProfileModal").close()
+                    }
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </dialog>
           </div>
         </div>
       </div>

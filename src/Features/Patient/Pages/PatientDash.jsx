@@ -16,7 +16,7 @@ export default function PatientDash() {
   console.log(user);
 
   // Loading or error states for patients
-  if (isLoading)
+  if (isLoading || !user)
     return (
       <div className="flex justify-center items-center h-screen text-text-dark">
         Loading patients...
@@ -44,7 +44,7 @@ export default function PatientDash() {
             {/* Header */}
             <div className="flex flex-wrap justify-between gap-3 p-4">
               <p className="text-text-dark text-[32px] font-bold leading-tight min-w-72">
-                Welcome back, Sophia
+                Welcome back, {user.firstName} ✨
               </p>
             </div>
 
@@ -57,160 +57,6 @@ export default function PatientDash() {
                 Book New Appointment
               </Link>
             </div>
-
-            {/* Patient List Section */}
-            {/* <div className="p-6">
-              <h2 className="text-[22px] font-bold mb-4 text-text-dark">
-                Patients ({data?.count || 0})
-              </h2>
-
-              <ul className="space-y-3">
-                {data?.patients.map((p) => (
-                  <li
-                    key={p._id}
-                    className="flex items-center justify-between bg-bg-light-secondary hover:bg-bg-light-primary p-3 rounded-lg transition-all duration-200"
-                  >
-                    <div>
-                      <p className="font-medium text-text-dark">
-                        {p.userId?.firstName} {p.userId?.lastName}
-                      </p>
-                      <p className="text-sm text-gray-500">{p.userId?.email}</p>
-                    </div>
-                    <span className="text-sm text-gray-400">
-                      {p.gender || "—"}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div> */}
-
-            {/* Upcoming Appointment */}
-            <h2 className="text-text-dark text-[22px] font-bold px-4 pb-3 pt-5">
-              Upcoming Appointment
-            </h2>
-
-            <div className="p-4">
-              <div className="flex items-stretch justify-between gap-4 rounded-lg bg-bg-light-primary p-4 shadow-[0_0_4px_rgba(0,0,0,0.1)]">
-                <div className="flex flex-[2_2_0px] flex-col gap-4">
-                  <div className="flex flex-col gap-1">
-                    <p className="text-[#616f89] text-sm font-normal leading-normal">
-                      Next Appointment
-                    </p>
-                    <p className="text-text-dark text-base font-bold leading-tight">
-                      Dr. Emily Carter
-                    </p>
-                    <p className="text-[#616f89] text-sm font-normal leading-normal">
-                      General Practitioner | 123 Medical Center
-                    </p>
-                  </div>
-                  <button className="bg-bg-light-secondary hover:bg-bg-light-primary text-text-dark rounded-lg px-4 py-1 text-sm font-medium transition-colors duration-200 w-fit">
-                    View Details
-                  </button>
-                </div>
-
-                <div
-                  className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1"
-                  style={{
-                    backgroundImage:
-                      'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBkafd4HBZ8rkWJmkQf9gvaYYp6-sSAKUtvaHWUE1K4bjw25OuEcep6vc1-G1tWml0ykW8HDVPChUPI-bWbuz31OhKeavh41DR3rbbVSb0YRG-RzHCxfHK75-F_dOc4hAQZb7kgqMQHp4dzts-nXXDDBeutO1XkQZHWF97xVGXTBBjqAcL3-Fs8UFh0WB88CRN0E2oiln94m_VpKuRyxJ-7pXUSlFEUgwRIQbSouSka1WNIx8QiASA8QwLnOQ5gzV1hvX8MORVBLSs")',
-                  }}
-                ></div>
-              </div>
-            </div>
-
-            {/* Recent Activity */}
-            <h2 className="text-text-dark text-[22px] font-bold px-4 pb-3 pt-5">
-              Recent Activity
-            </h2>
-            {[
-              {
-                title: "Message Received",
-                desc: "New message from Dr. Carter",
-                time: "2d ago",
-                icon: mail,
-              },
-              {
-                title: "Test Results",
-                desc: "Your blood test results are ready",
-                time: "3d ago",
-                icon: record,
-              },
-            ].map((activity, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-4 bg-bg-light-primary px-4 min-h-[72px] py-2 justify-between hover:bg-bg-light-secondary transition-colors duration-200"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center rounded-lg bg-bg-light-secondary shrink-0 size-12">
-                    <img
-                      src={activity.icon}
-                      alt={`${activity.title} icon`}
-                      className="w-6 h-6 object-contain"
-                    />
-                  </div>
-
-                  <div className="flex flex-col justify-center">
-                    <p className="text-text-dark text-base font-medium leading-normal">
-                      {activity.title}
-                    </p>
-                    <p className="text-[#616f89] text-sm font-normal leading-normal">
-                      {activity.desc}
-                    </p>
-                  </div>
-                </div>
-
-                <p className="text-[#616f89] text-sm font-normal leading-normal">
-                  {activity.time}
-                </p>
-              </div>
-            ))}
-
-            {/* Past Appointments */}
-            <h2 className="text-text-dark text-[22px] font-bold px-4 pb-3 pt-5">
-              Past Appointments
-            </h2>
-
-            {[
-              {
-                doctor: "Dr. Carter",
-                type: "General Checkup",
-                time: "2 months ago",
-                icon: calender,
-              },
-              {
-                doctor: "Dr. Bennett",
-                type: "Dermatology Consultation",
-                time: "6 months ago",
-                icon: calender,
-              },
-            ].map((apt, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-4 bg-bg-light-primary px-4 min-h-[72px] py-2 justify-between hover:bg-bg-light-secondary transition-colors duration-200"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center rounded-lg bg-bg-light-secondary shrink-0 w-12 h-12">
-                    <img
-                      src={apt.icon}
-                      alt={`${apt.doctor} icon`}
-                      className="w-6 h-6 object-contain"
-                    />
-                  </div>
-
-                  <div className="flex flex-col justify-center">
-                    <p className="text-text-dark text-base font-medium leading-normal">
-                      {apt.doctor}
-                    </p>
-                    <p className="text-[#616f89] text-sm font-normal leading-normal">
-                      {apt.type}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-[#616f89] text-sm font-normal leading-normal">
-                  {apt.time}
-                </p>
-              </div>
-            ))}
           </div>
         </div>
       </div>
