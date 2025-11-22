@@ -1,4 +1,5 @@
 import {
+  Brain,
   CalendarRangeIcon,
   LayoutDashboard,
   Menu,
@@ -9,10 +10,11 @@ import {
 import { useState } from "react";
 import { Link } from "react-router";
 import { useAuth } from "../../../../Context/AuthContext";
+import { Avatar } from "@mui/material";
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   return (
     <>
       {isOpen && (
@@ -37,10 +39,17 @@ export default function SideBar() {
           } flex items-center  w-full mb-10`}
         >
           <Menu size={20} />
-          {isOpen && <span className="font-bold">Patient Name</span>}
         </button>
 
         <nav className="flex flex-col gap-4">
+          {isOpen && (
+            <Link to="profile" className="flex items-center gap-4 mb-4">
+              <Avatar />
+              <span className="font-bold">
+                {user?.firstName + " " + user?.lastName}
+              </span>
+            </Link>
+          )}
           <Link
             to=""
             className={`${
@@ -71,23 +80,23 @@ export default function SideBar() {
           </Link>
 
           <Link
-            to="assistant"
+            to="bills"
             className={`${
               !isOpen ? "justify-center" : "justify-start"
             } flex items-center gap-3 `}
           >
             <ReceiptText size={20} />
-            {isOpen && <span>AI Specialty Picker</span>}
+            {isOpen && <span>Bills</span>}
           </Link>
 
           <Link
-            to="profile"
+            to="assistant"
             className={`${
               !isOpen ? "justify-center" : "justify-start"
             } flex items-center gap-3 `}
           >
-            <User size={20} />
-            {isOpen && <span>Profile</span>}
+            <Brain size={20} />
+            {isOpen && <span>AI Specialty Picker</span>}
           </Link>
         </nav>
         {isOpen && (

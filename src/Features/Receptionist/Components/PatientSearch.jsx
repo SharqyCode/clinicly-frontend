@@ -20,7 +20,7 @@ export default function PatientSearch({
     role === "patient" ? user.email : ""
   );
   const [name, setName] = useState(() =>
-    role === "patient" ? user.fullName : ""
+    role === "patient" ? user.firstName + " " + user.lastName : ""
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -64,6 +64,7 @@ export default function PatientSearch({
       return matchesPhone && matchesEmail && matchesName && matchActive;
     });
   }, [patients, phone, email, name]);
+  console.log(filteredPatients);
 
   if (isLoading) return "Loading...";
   if (isError) return "Error loading patients";
@@ -106,7 +107,7 @@ export default function PatientSearch({
               setEmail("");
               setActivePatient(null);
             }}
-            disabled={!activePatient}
+            disabled={!activePatient || user.role === "patient"}
           >
             Reset
           </button>

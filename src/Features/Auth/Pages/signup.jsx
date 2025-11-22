@@ -15,7 +15,7 @@ const Signup = () => {
     bloodType: "",
     emergencyName: "",
     emergencyRelation: "",
-    phone:"",
+    phone: "",
     emergencyPhone: "",
     country: "Egypt",
     city: "",
@@ -71,10 +71,10 @@ const Signup = () => {
       newErrors.lastName = "Last name must be at least 3 characters.";
     if (!formData.email.trim()) newErrors.email = "Email is required.";
     if (!formData.password.trim()) newErrors.password = "Password is required.";
-    if(!formData.phone.trim()){
+    if (!formData.phone.trim()) {
       newErrors.phone = "Phone is required.";
     }
-    if(!formData.phone.match(/^[0-9]{8,15}$/))
+    if (!formData.phone.match(/^[0-9]{8,15}$/))
       newErrors.phone = "Phone must be 8–15 digits.";
     if (!formData.dateOfBirth)
       newErrors.dateOfBirth = "Date of Birth is required.";
@@ -131,7 +131,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-lg">
         <h2 className="text-2xl font-bold mb-6 text-center">Patient Signup</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
@@ -175,7 +175,7 @@ const Signup = () => {
               onChange={handleChange}
               className="input w-full"
             />
-            
+
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email}</p>
             )}

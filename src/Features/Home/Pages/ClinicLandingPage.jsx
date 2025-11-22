@@ -45,9 +45,8 @@ export default function ClinicLandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-slate-800 antialiased">
+    <>
       {/* NAV */}
-      <HomeNavBar />
       {/* HERO */}
       <header className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <motion.div
@@ -64,20 +63,10 @@ export default function ClinicLandingPage() {
           </p>
 
           <div className="mt-6 flex gap-3">
-            <a
-              href="#get-started"
-              className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-3 rounded-lg shadow hover:opacity-95"
-            >
+            <Link to="doctors" className="btn btn-primary btn-block btn-lg">
               {/* <UserPlus size={18} />  */}
               Get Started
-            </a>
-            <a
-              href="#book"
-              className="inline-flex items-center gap-2 border border-slate-200 px-5 py-3 rounded-lg"
-            >
-              {/* <Calendar size={16} />  */}
-              Book Appointment
-            </a>
+            </Link>
           </div>
 
           <div className="mt-8 grid grid-cols-3 gap-4">
@@ -250,10 +239,7 @@ export default function ClinicLandingPage() {
                 The best care you can ask for
               </h3>
               <p className="text-slate-600 mt-1">One click away.</p>
-              <Link
-                to="/patient/book"
-                className="inline-flex items-center gap-2 bg-accent-primary-main text-text-light px-5 py-3 rounded-lg mt-5"
-              >
+              <Link to="/auth/login" className="btn btn-primary mt-5">
                 {/* <Calendar size={16} />  */}
                 Book Appointment
               </Link>
@@ -312,7 +298,6 @@ export default function ClinicLandingPage() {
       </main>
 
       {/* FOOTER */}
-      <MainFooter />
-    </div>
+    </>
   );
 }

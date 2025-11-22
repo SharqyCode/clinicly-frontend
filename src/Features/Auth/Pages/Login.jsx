@@ -72,10 +72,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-light-secondary)]">
+    <div className="min-h-screen flex items-center justify-center ">
       <div className="bg-[var(--color-bg-light-primary)] p-10 rounded-2xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-[var(--color-accent-primary-main)] text-center">
-          Patient Login
+          Login
         </h2>
 
         <form className="space-y-4" onSubmit={handleSubmit}>

@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [superUser, setSuperUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -31,6 +30,8 @@ export const AuthProvider = ({ children }) => {
   // LOGIN
   // ----------------------------
   const login = async (data, signup = false) => {
+    console.log("LOGIN RESPONSE", data);
+
     const baseUser = data.user;
     setUser(baseUser);
 
@@ -68,8 +69,9 @@ export const AuthProvider = ({ children }) => {
 
     const loadUser = async () => {
       try {
-        const decoded = jwtDecode(token);
+        const decoded = await jwtDecode(token);
         const res = await getUserById(decoded.id);
+        console.log(res);
         const baseUser = res.user || res;
         setUser(baseUser);
 

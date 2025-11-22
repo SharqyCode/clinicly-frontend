@@ -4,7 +4,7 @@ import { isActiveDoctor } from "../Utils/doctorListHelpers";
 import { Link } from "react-router";
 
 export default function DoctorCard({ doctor, activeDoctor }) {
-  console.log(doctor);
+  // console.log(doctor);
   return (
     <div
       className={clsx(
