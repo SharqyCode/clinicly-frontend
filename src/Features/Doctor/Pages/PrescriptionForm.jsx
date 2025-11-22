@@ -5,6 +5,8 @@ import {
   updatePrescription,
   getPrescriptionById,
 } from "../../../Api/Services/prescriptions.js";
+import { getAllPatients } from "../../../Api/Services/patients.js";
+import { getDoctorAppointments } from "../../../Api/Services/appointments.js";
 import { useAuth } from "../../../Context/AuthContext.jsx";
 
 const PrescriptionForm = ({
@@ -16,10 +18,12 @@ const PrescriptionForm = ({
   onCancel,
 }) => {
   const queryClient = useQueryClient();
+  const { superUser } = useAuth();
+
   const [formData, setFormData] = useState({
     appointment: appointmentId || "",
     patient: patientId || "",
-    doctor: doctorId || "",
+    doctor: doctorId || superUser?._id || "",
     medications: [
       {
         name: "",
@@ -32,10 +36,50 @@ const PrescriptionForm = ({
     additionalNotes: "",
   });
 
-  const { superUser } = useAuth();
-  console.log(superUser);
+  console.log("Form initialized with:", { superUser, formData });
 
   const [isEditMode, setIsEditMode] = useState(false);
+
+  // superUser._id is already the doctor document ID, not user ID
+  const actualDoctorId = doctorId || superUser?._id;
+
+  // Query for loading all patients
+  const { data: patientsData, isLoading: loadingPatients } = useQuery({
+    queryKey: ["patients"],
+    queryFn: getAllPatients,
+  });
+
+  // Query for loading doctor's appointments
+  const {
+    data: appointmentsData,
+    isLoading: loadingAppointments,
+    error: appointmentsError,
+  } = useQuery({
+    queryKey: ["appointments", actualDoctorId],
+    queryFn: () => getDoctorAppointments(actualDoctorId),
+    enabled: !!actualDoctorId,
+  });
+
+  // Debug: Log patients data
+  useEffect(() => {
+    console.log("Patients data loaded:", patientsData);
+    console.log("Loading patients:", loadingPatients);
+  }, [patientsData, loadingPatients]);
+
+  // Debug: Log appointments data
+  useEffect(() => {
+    console.log("Appointments data loaded:", appointmentsData);
+    console.log("Loading appointments:", loadingAppointments);
+    console.log("Appointments error:", appointmentsError);
+    console.log("Selected patient:", formData.patient);
+    console.log("Actual Doctor ID:", actualDoctorId);
+  }, [
+    appointmentsData,
+    loadingAppointments,
+    appointmentsError,
+    formData.patient,
+    actualDoctorId,
+  ]);
 
   // Query for loading existing prescription
   const {
@@ -74,6 +118,16 @@ const PrescriptionForm = ({
       setIsEditMode(true);
     }
   }, [prescriptionId]);
+
+  // Auto-populate doctor field from auth context if not provided
+  useEffect(() => {
+    if (actualDoctorId && !formData.doctor) {
+      setFormData((prev) => ({
+        ...prev,
+        doctor: actualDoctorId,
+      }));
+    }
+  }, [actualDoctorId, formData.doctor]);
 
   useEffect(() => {
     if (existingPrescription) {
@@ -217,23 +271,28 @@ const PrescriptionForm = ({
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             Prescription Details
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">
-                Patient ID *
+                Patient *
               </label>
-              <input
-                type="text"
+              <select
                 name="patient"
                 value={formData.patient}
                 onChange={(e) =>
                   setFormData({ ...formData, patient: e.target.value })
                 }
-                placeholder="Enter patient ID"
                 required
-                readOnly={isEditMode}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-accent-primary-main focus:border-transparent outline-none read-only:bg-gray-100"
-              />
+                disabled={isEditMode || loadingPatients}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-accent-primary-main focus:border-transparent outline-none disabled:bg-gray-100"
+              >
+                <option value="">Select a patient</option>
+                {patientsData?.data?.map((patient) => (
+                  <option key={patient._id} value={patient._id}>
+                    {patient.userId?.firstName} {patient.userId?.lastName}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="space-y-1">
@@ -243,30 +302,10 @@ const PrescriptionForm = ({
               <input
                 type="text"
                 name="doctor"
-                value={superUser?._id}
-                // onChange={(e) =>
-                //   setFormData({ ...formData, doctor: e.target.value })
-                // }
+                value={actualDoctorId || "Loading..."}
                 disabled
                 placeholder="Enter doctor ID"
                 required
-                readOnly={isEditMode}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-accent-primary-main focus:border-transparent outline-none read-only:bg-gray-100"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">
-                Appointment ID
-              </label>
-              <input
-                type="text"
-                name="appointment"
-                value={formData.appointment}
-                onChange={(e) =>
-                  setFormData({ ...formData, appointment: e.target.value })
-                }
-                placeholder="Enter appointment ID (optional)"
                 readOnly={isEditMode}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-accent-primary-main focus:border-transparent outline-none read-only:bg-gray-100"
               />

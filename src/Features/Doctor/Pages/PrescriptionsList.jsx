@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import PrescriptionForm from "./PrescriptionForm.jsx";
 import { usePrescriptions } from "../../hooks/usePrescriptions.js";
+import { useAuth } from "../../../Context/AuthContext.jsx";
 
-const PrescriptionsList = ({ doctorId, viewMode = "doctor" }) => {
+const PrescriptionsList = ({ viewMode = "doctor" }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingPrescription, setEditingPrescription] = useState(null);
   const [selectedPatientId, setSelectedPatientId] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const { superUser } = useAuth();
+
+  // Get doctor ID from logged-in user
+  const doctorId = superUser?._id;
 
   // Use the updated hook with TanStack Query
   const {

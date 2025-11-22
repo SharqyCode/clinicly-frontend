@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:5002/api";
 
 const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("accessToken");
   return {
     "Content-Type": "application/json",
     Authorization: token ? `Bearer ${token}` : "",

@@ -6,6 +6,7 @@ import {
   ReceiptText,
   Timer,
   User,
+  FileText,
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
@@ -88,6 +89,16 @@ export default function SideBar() {
           >
             <ReceiptText size={20} />
             {isOpen && <span>Bills</span>}
+          </Link>
+
+          <Link
+            to="prescriptions"
+            className={`${
+              !isOpen ? "justify-center" : "justify-start"
+            } flex items-center gap-3 `}
+          >
+            <FileText size={20} />
+            {isOpen && <span>Prescriptions</span>}
           </Link>
 
           <Link

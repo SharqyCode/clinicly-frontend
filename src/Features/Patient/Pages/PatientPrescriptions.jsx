@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { usePrescriptions } from "../../hooks/usePrescriptions.js";
+import { useAuth } from "../../../Context/AuthContext";
 
-const PatientPrescriptions = ({ patientId }) => {
+const PatientPrescriptions = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPrescription, setSelectedPrescription] = useState(null);
+  const { superUser } = useAuth();
+
+  // Get patient ID from the logged-in user's superUser data
+  const patientId = superUser?._id;
 
   // Use the updated hook with TanStack Query
   const { prescriptions, loading, error } = usePrescriptions({
@@ -15,7 +20,11 @@ const PatientPrescriptions = ({ patientId }) => {
     if (!searchTerm) return true;
 
     const searchLower = searchTerm.toLowerCase();
-    const doctorName = prescription.doctor?.name?.toLowerCase() || "";
+    const doctorFirstName =
+      prescription.doctor?.userId?.firstName?.toLowerCase() || "";
+    const doctorLastName =
+      prescription.doctor?.userId?.lastName?.toLowerCase() || "";
+    const doctorName = `${doctorFirstName} ${doctorLastName}`;
     const medications =
       prescription.medications?.some((med) =>
         med.name.toLowerCase().includes(searchLower)
@@ -44,104 +53,107 @@ const PatientPrescriptions = ({ patientId }) => {
 
   if (selectedPrescription) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="mb-6 flex items-center justify-between">
-          <button
-            onClick={closePrescriptionDetail}
-            className="flex items-center text-accent-primary-main hover:text-accent-primary-dark transition-colors duration-200 font-medium"
-          >
-            ← Back to Prescriptions
-          </button>
-          <h2 className="text-2xl font-bold text-gray-800">
-            Prescription Details
-          </h2>
-        </div>
+      <div className="max-w-5xl mx-auto p-6">
+        <button
+          onClick={closePrescriptionDetail}
+          className="flex items-center text-accent-primary-main hover:text-accent-primary-dark transition-colors duration-200 font-medium mb-6"
+        >
+          ← Back to Prescriptions
+        </button>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="grid md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
-            <div className="space-y-1">
-              <span className="font-semibold text-gray-700">Doctor:</span>
-              <p className="text-gray-600">
-                {selectedPrescription.doctor?.name || "Unknown Doctor"}
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          {/* Header Section */}
+          <div className="bg-gradient-to-r from-accent-primary-main to-accent-primary-dark p-6 text-white">
+            <h2 className="text-3xl font-bold mb-2">Prescription Details</h2>
+            <p className="text-blue-100">Review your medication details</p>
+          </div>
+
+          {/* Doctor & Date Info */}
+          <div className="grid md:grid-cols-2 gap-6 p-6 bg-gray-50 border-b">
+            <div>
+              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+                Doctor
+              </span>
+              <p className="text-lg font-semibold text-gray-800 mt-1">
+                Dr. {selectedPrescription.doctor?.userId?.firstName}{" "}
+                {selectedPrescription.doctor?.userId?.lastName ||
+                  "Unknown Doctor"}
               </p>
             </div>
-            <div className="space-y-1">
-              <span className="font-semibold text-gray-700">
-                Date Prescribed:
+            <div>
+              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+                Date Prescribed
               </span>
-              <p className="text-gray-600">
+              <p className="text-lg font-semibold text-gray-800 mt-1">
                 {formatDate(selectedPrescription.createdAt)}
               </p>
             </div>
-            {selectedPrescription.updatedAt !==
-              selectedPrescription.createdAt && (
-              <div className="space-y-1">
-                <span className="font-semibold text-gray-700">
-                  Last Updated:
-                </span>
-                <p className="text-gray-600">
-                  {formatDate(selectedPrescription.updatedAt)}
-                </p>
-              </div>
-            )}
           </div>
 
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+          {/* Medications Section */}
+          <div className="p-6">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+              <span className="bg-accent-primary-main text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">
+                💊
+              </span>
               Prescribed Medications
             </h3>
             <div className="space-y-4">
               {selectedPrescription.medications?.map((medication, index) => (
                 <div
                   key={index}
-                  className="border border-gray-200 rounded-lg p-4 bg-gray-50"
+                  className="border-2 border-gray-200 rounded-xl p-5 bg-white hover:shadow-md transition-shadow"
                 >
-                  <div className="mb-3">
-                    <h4 className="text-lg font-semibold text-accent-primary-main">
-                      {medication.name}
-                    </h4>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-3">
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-700">Dosage:</span>
-                      <span className="text-gray-600">{medication.dosage}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-700">
-                        Frequency:
+                  <h4 className="text-xl font-bold text-accent-primary-main mb-4">
+                    {medication.name}
+                  </h4>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <span className="text-xs font-semibold text-gray-600 uppercase block mb-1">
+                        Dosage
                       </span>
-                      <span className="text-gray-600">
+                      <span className="text-lg font-semibold text-gray-800">
+                        {medication.dosage}
+                      </span>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <span className="text-xs font-semibold text-gray-600 uppercase block mb-1">
+                        Frequency
+                      </span>
+                      <span className="text-lg font-semibold text-gray-800">
                         {medication.frequency}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-700">
-                        Duration:
+                    <div className="bg-purple-50 p-3 rounded-lg">
+                      <span className="text-xs font-semibold text-gray-600 uppercase block mb-1">
+                        Duration
                       </span>
-                      <span className="text-gray-600">
+                      <span className="text-lg font-semibold text-gray-800">
                         {medication.duration}
                       </span>
                     </div>
-                    {medication.notes && (
-                      <div className="md:col-span-2">
-                        <span className="font-medium text-gray-700">
-                          Special Instructions:
-                        </span>
-                        <p className="text-gray-600 mt-1">{medication.notes}</p>
-                      </div>
-                    )}
                   </div>
+                  {medication.notes && (
+                    <div className="mt-4 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded">
+                      <span className="font-semibold text-gray-700 block mb-1">
+                        📝 Special Instructions:
+                      </span>
+                      <p className="text-gray-700">{medication.notes}</p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           </div>
 
+          {/* Additional Notes */}
           {selectedPrescription.additionalNotes && (
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">
+            <div className="p-6 bg-amber-50 border-t-2 border-amber-200">
+              <h3 className="text-xl font-bold text-gray-800 mb-3 flex items-center">
+                <span className="mr-2">⚠️</span>
                 Additional Instructions
               </h3>
-              <p className="text-gray-600 leading-relaxed bg-amber-50 p-4 rounded-lg border-l-4 border-accent-warning-main">
+              <p className="text-gray-700 leading-relaxed text-lg">
                 {selectedPrescription.additionalNotes}
               </p>
             </div>
@@ -207,7 +219,9 @@ const PatientPrescriptions = ({ patientId }) => {
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                      Dr. {prescription.doctor?.name || "Unknown Doctor"}
+                      Dr. {prescription.doctor?.userId?.firstName}{" "}
+                      {prescription.doctor?.userId?.lastName ||
+                        "Unknown Doctor"}
                     </h3>
                     <p className="text-sm text-gray-500">
                       {formatDate(prescription.createdAt)}
