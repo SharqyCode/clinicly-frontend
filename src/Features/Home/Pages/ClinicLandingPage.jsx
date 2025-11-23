@@ -7,6 +7,7 @@ import patientCare from "../assets/Landing/patientCare.jpg";
 import { Link } from "react-router";
 import HomeNavBar from "../../../Components/Navigation/HomeNavBar";
 import MainFooter from "../../../Components/Footer/MainFooter";
+import { useAuth } from "../../../Context/AuthContext";
 
 export default function ClinicLandingPage() {
   // counters
@@ -16,6 +17,8 @@ export default function ClinicLandingPage() {
   const [patientsServed, setPatientsServed] = useState(0);
   const [doctorsCount, setDoctorsCount] = useState(0);
   const [years, setYears] = useState(0);
+
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!statsInView) return;
@@ -63,7 +66,10 @@ export default function ClinicLandingPage() {
           </p>
 
           <div className="mt-6 flex gap-3">
-            <Link to="doctors" className="btn btn-primary btn-block btn-lg">
+            <Link
+              to={user ? "patient" : "doctors"}
+              className="btn btn-primary btn-block btn-lg"
+            >
               {/* <UserPlus size={18} />  */}
               Get Started
             </Link>

@@ -2,8 +2,11 @@ import React from "react";
 import { Link } from "react-router";
 import Logo from "./Logo";
 import { UserCircle } from "lucide-react";
+import { useAuth } from "../../Context/AuthContext";
+import { Avatar } from "@mui/material";
 
 export default function HomeNavBar() {
+  const { user, logout } = useAuth();
   return (
     <nav className="navbar bg-base-100 shadow-sm md:px-8">
       <div className="flex justify-between w-full">
@@ -32,21 +35,39 @@ export default function HomeNavBar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 rounded-box w-52 mt-3 p-2 shadow right-0"
           >
-            <li>
-              <Link className="p-2 text-lg" to="/auth/login">
-                Book Appointment
-              </Link>
-            </li>
-            <li>
-              <Link className="p-2 text-lg" to="/doctors">
-                See Doctors
-              </Link>
-            </li>
-            <li>
-              <Link className="p-2 text-lg" to="/auth/login">
-                Login
-              </Link>
-            </li>
+            {!user ? (
+              <>
+                <li>
+                  <Link className="p-2 text-lg" to="/auth/login">
+                    Book Appointment
+                  </Link>
+                </li>
+                <li>
+                  <Link className="p-2 text-lg" to="/doctors">
+                    See Doctors
+                  </Link>
+                </li>
+                <li>
+                  <Link className="p-2 text-lg" to="/auth/login">
+                    Login
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link className="p-2 text-lg" to="/auth/login">
+                    <UserCircle size={20} className="mr-4" />
+                    Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link className="p-2 text-lg" onClick={logout}>
+                    Logout
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
@@ -54,21 +75,38 @@ export default function HomeNavBar() {
       {/* Desktop menu */}
       <div className="navbar-end hidden lg:flex">
         <ul className="menu menu-horizontal gap-3 px-1">
-          <li>
-            <Link to="/patient/appointments/book" className="btn btn-primary">
-              Book Appointment
-            </Link>
-          </li>
-          <li>
-            <Link to="/doctors" className="btn btn-neutral">
-              See Doctors
-            </Link>
-          </li>
-          <li>
-            <Link to="/auth/login" className="btn btn-outline">
-              Login
-            </Link>
-          </li>
+          {!user ? (
+            <>
+              <li>
+                <Link to={`/auth/login`} className="btn btn-primary">
+                  Book Appointment
+                </Link>
+              </li>
+              <li>
+                <Link to="/doctors" className="btn btn-neutral">
+                  See Doctors
+                </Link>
+              </li>
+              <li>
+                <Link to="/auth/login" className="btn btn-outline">
+                  Login
+                </Link>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link to={`/${user.role}`}>
+                  <UserCircle size={30} />
+                </Link>
+              </li>
+              <li>
+                <Link onClick={logout} className="btn btn-ghost">
+                  Logout
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </nav>

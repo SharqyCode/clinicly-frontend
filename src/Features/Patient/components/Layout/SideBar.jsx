@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { useAuth } from "../../../../Context/AuthContext";
 import { Avatar } from "@mui/material";
+import Logo from "../../../../Components/Navigation/Logo";
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,11 +33,13 @@ export default function SideBar() {
           isOpen ? "w-64" : "w-16"
         } absolute h-full top-0 left-0  bg-white  text-gray-800  shadow-r transition-all duration-300 p-4 z-20`}
       >
+        <Logo min={!isOpen} />
+
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={`${
             !isOpen ? "justify-center" : "justify-between"
-          } flex items-center  w-full mb-10`}
+          } flex items-center  w-full mb-10 mt-8`}
         >
           <Menu size={20} />
         </button>
@@ -45,9 +48,7 @@ export default function SideBar() {
           {isOpen && (
             <Link to="profile" className="flex items-center gap-4 mb-4">
               <Avatar />
-              <span className="font-bold">
-                {user?.firstName + " " + user?.lastName}
-              </span>
+              <span className="font-bold">{user.name}</span>
             </Link>
           )}
           <Link
