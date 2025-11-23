@@ -9,7 +9,7 @@ export default function RoleRoute({ children, allowed = [] }) {
 
   if (!user) return <Navigate to="/auth/login" replace />;
 
-  const role = superUser?.role || user?.role || user?.roles; 
+  const role = superUser?.role || user?.role || user?.roles;
   // supported: allowed = ["admin"] or ["doctor","admin"]
 
   if (!allowed.includes(role)) {

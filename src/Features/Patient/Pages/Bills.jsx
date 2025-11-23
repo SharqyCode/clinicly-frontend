@@ -1,13 +1,55 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getInvoices } from "../../../Api/Services/billingService";
+import React, { useEffect } from "react";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  getInvoices,
+  updateInvoice,
+} from "../../../Api/Services/billingService";
 import { format } from "date-fns";
 import { useAuth } from "../../../Context/AuthContext";
+import toast, { Toaster } from "react-hot-toast";
+import { useSearchParams } from "react-router";
 
 export default function Bills() {
   const { superUser, loading } = useAuth();
   const patientId = superUser?._id;
   console.log(superUser);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const invoiceQuery = searchParams.get("invoice");
+  const statusQuery = searchParams.get("status");
+
+  const queryClient = new QueryClient();
+
+  const updateInvoiceMutation = useMutation({
+    mutationFn: ({ id, payload }) => updateInvoice(id, payload),
+    onSuccess: () => {
+      toast.success("Invoice updated successfully!");
+      queryClient.invalidateQueries(["invoices", patientId]);
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to update invoice");
+    },
+  });
+
+  useEffect(() => {
+    if (statusQuery === "success" && invoiceQuery) {
+      updateInvoiceMutation.mutate({
+        id: invoiceQuery,
+        payload: {
+          paymentStatus: "Paid",
+          paymentMethod: "card",
+          paymentDate: new Date(),
+        },
+      });
+
+      // Clear URL params
+      setSearchParams({});
+    }
+    if (statusQuery === "canceled") {
+      toast.error("Payment canceled.");
+      setSearchParams({});
+    }
+  }, [statusQuery, invoiceQuery]);
 
   if (loading) {
     return (
@@ -26,6 +68,9 @@ export default function Bills() {
   });
 
   console.log(data);
+
+  console.log("updated", updateInvoiceMutation.data);
+  console.log("error", updateInvoiceMutation.error);
 
   if (isLoading)
     return (
@@ -64,6 +109,7 @@ export default function Bills() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="max-w-4xl mx-auto space-y-10">
         {/* HEADER */}
         <h1 className="text-3xl font-bold text-gray-800">My Bills</h1>
@@ -125,6 +171,32 @@ export default function Bills() {
 // ======================= CARD COMPONENT =======================
 
 function InvoiceCard({ invoice, patientName, doctorName }) {
+  const makePayment = async () => {
+    const body = { invoice };
+    const headers = { "Content-Type": "application/json" };
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/create-checkout-session`,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify(body),
+        }
+      );
+      if (response.status !== 200) throw new Error(response.error);
+      const data = await response.json();
+
+      if (data?.url) {
+        window.location.assign(data.url);
+      } else {
+        console.error("Stripe Checkout URL missing:", data);
+      }
+    } catch (err) {
+      console.log("error:", err.message);
+    }
+  };
+
   return (
     <div className="border border-gray-200 rounded-xl p-4 hover:shadow transition">
       <div className="flex justify-between items-center">
@@ -164,6 +236,14 @@ function InvoiceCard({ invoice, patientName, doctorName }) {
             {invoice.totalAmount} EGP
           </span>
         </p>
+        {invoice.paymentStatus == "Pending" && (
+          <p>
+            <strong>Due Amount:</strong>{" "}
+            <span className="font-semibold text-gray-800">
+              {invoice.remainingAmount} EGP
+            </span>
+          </p>
+        )}
         {invoice.discount ? (
           <p>
             <strong>Discount:</strong> {invoice.discount}{" "}
@@ -173,7 +253,12 @@ function InvoiceCard({ invoice, patientName, doctorName }) {
       </div>
 
       {invoice.paymentStatus === "Pending" && (
-        <button className="btn btn-primary btn-sm mt-4 w-full">Pay Now</button>
+        <button
+          onClick={makePayment}
+          className="btn btn-primary btn-sm mt-4 w-full"
+        >
+          Pay Now
+        </button>
       )}
     </div>
   );

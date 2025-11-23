@@ -34,6 +34,7 @@ export const getInvoiceById = async (id) => {
 
 // UPDATE
 export const updateInvoice = async (id, payload) => {
+  console.log(id, payload);
   try {
     const { data } = await api.patch(`/invoices/${id}`, payload);
     return data;
