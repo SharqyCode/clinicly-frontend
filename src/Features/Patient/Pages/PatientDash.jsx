@@ -8,6 +8,7 @@ import mail from "../../../assets/mail.svg";
 import homelogo from "../../../assets/homelogo.svg";
 import msg from "../../../assets/msg.svg";
 import profile from "../../../assets/profile.svg";
+import patientDashImg from "../Assets/patientDash.png";
 import { useAuth } from "../../../Context/AuthContext";
 
 export default function PatientDash() {
@@ -44,7 +45,7 @@ export default function PatientDash() {
             {/* Header */}
             <div className="flex flex-wrap justify-between gap-3 p-4">
               <p className="text-text-dark text-[32px] font-bold leading-tight min-w-72">
-                Welcome back, {user.name.split(" ")[0]} ✨
+                Welcome back, {user.firstName} ✨
               </p>
             </div>
 
@@ -60,6 +61,11 @@ export default function PatientDash() {
           </div>
         </div>
       </div>
+      <img
+        className="absolute bottom-0 max-w-[800px] left-1/2 -translate-x-1/2"
+        src={patientDashImg}
+        alt=""
+      />
     </div>
   );
 }
