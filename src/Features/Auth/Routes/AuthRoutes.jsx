@@ -1,8 +1,8 @@
 import React from "react";
+import { Routes, Route } from "react-router-dom";
 import Signup from "../Pages/signup";
 import Layout from "../Layout/Layout";
 import Login from "../Pages/Login";
-import { Route, Routes } from "react-router";
 
 export default function AuthRoutes() {
   return (
